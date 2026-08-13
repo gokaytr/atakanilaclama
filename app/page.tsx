@@ -64,21 +64,33 @@ export default function HomePage() {
     <div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(faqSchema) }} />
 
-      {/* Fiyat listesi banner — the very first image on the homepage, full
-          width, same on mobile and desktop (mobile-first request). */}
-      <section className="relative h-72 w-full sm:h-96 md:h-[26rem]">
-        <Image
-          src="/fiyat-listesi.jpg"
-          alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-top"
-        />
+      {/* Fiyat listesi banner — the very first image on the homepage.
+          Rendered at its natural aspect ratio (no crop, nothing cut off —
+          "tam oturt"), narrower and shorter on desktop so it reads clearly
+          and the content below sits higher on the page. */}
+      <section className="w-full bg-emerald-50">
+        <div className="mx-auto flex justify-center px-4 py-4 md:py-5">
+          <Image
+            src="/fiyat-listesi.jpg"
+            alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
+            width={1024}
+            height={1536}
+            priority
+            sizes="(max-width: 767px) 100vw, 380px"
+            className="h-auto w-full max-w-[420px] rounded-2xl object-contain shadow-md md:max-w-[380px]"
+          />
+        </div>
       </section>
 
       {/* Soldan sağa akan hizmet/haşere şeridi — fiyat görselinin hemen altında */}
       <PestMarquee />
+
+      {/* Kısa güven cümlesi — açılışta görsel + şeritten hemen sonra */}
+      <section className="w-full bg-emerald-700 py-3">
+        <p className="mx-auto max-w-3xl px-4 text-center text-sm font-semibold text-white sm:text-base">
+          🛡️ Sağlık Bakanlığı Onaylı Ürünlerle Güvenli İlaçlama
+        </p>
+      </section>
 
       {/* Hero text — headline, description, CTAs */}
       <section className="w-full bg-gradient-to-b from-emerald-50 to-white">
