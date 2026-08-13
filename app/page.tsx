@@ -65,13 +65,13 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(faqSchema) }} />
 
       {/* Fiyat listesi banner — the very first image on the homepage.
-          Mobile: full image, natural aspect ratio, nothing cropped.
-          Desktop: shortened to just the header + "Ev İlaçlama" row so the
-          image, the ticker, the trust line and the hero CTA all fit in the
-          first viewport without scrolling. */}
+          Mobile: full image, natural aspect ratio, made a bit smaller so the
+          ticker + trust line below are also visible without a full scroll.
+          Desktop: wide "slider" style banner, cropped cleanly at the end of
+          the "Etkili Kalıcı Çözüm" badge row (no partial/cut row). */}
       <section className="w-full bg-emerald-50">
-        {/* Mobile / tablet — full, uncropped image */}
-        <div className="mx-auto flex justify-center px-4 py-4 md:hidden">
+        {/* Mobile / tablet — full, uncropped image, slightly smaller */}
+        <div className="mx-auto flex justify-center px-4 py-3 md:hidden">
           <Image
             src="/fiyat-listesi.jpg"
             alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
@@ -79,19 +79,19 @@ export default function HomePage() {
             height={1536}
             priority
             sizes="100vw"
-            className="h-auto w-full max-w-[420px] rounded-2xl object-contain shadow-md"
+            className="h-auto w-full max-w-[300px] rounded-2xl object-contain shadow-md"
           />
         </div>
 
-        {/* Desktop — short, top-cropped preview (down to "Ev İlaçlama") */}
-        <div className="mx-auto hidden justify-center px-4 py-3 md:flex">
-          <div className="relative h-56 w-[380px] overflow-hidden rounded-2xl shadow-md">
+        {/* Desktop — wide slider-style banner, cropped at "Etkili Kalıcı Çözüm" */}
+        <div className="mx-auto hidden justify-center px-4 py-4 md:flex">
+          <div className="relative h-[440px] w-full max-w-3xl overflow-hidden rounded-2xl shadow-md">
             <Image
               src="/fiyat-listesi.jpg"
               alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
               fill
               priority
-              sizes="380px"
+              sizes="768px"
               className="object-cover object-top"
             />
           </div>
@@ -108,23 +108,24 @@ export default function HomePage() {
         </p>
       </section>
 
-      {/* Hero text — headline, description, CTAs. Desktop padding/heading
-          kept compact so the WhatsApp button is still visible in the first
-          viewport, right under the image + ticker + trust line above. */}
+      {/* Hero text — headline, description, CTAs. The trust-badges strip
+          right after this section is expected to sit below the first fold
+          on desktop; this section itself (down through the CTA buttons) is
+          the intended boundary of the initial view. */}
       <section className="w-full bg-gradient-to-b from-emerald-50 to-white">
-        <div className="mx-auto max-w-7xl px-4 py-10 text-center md:py-8">
+        <div className="mx-auto max-w-7xl px-4 py-12 text-center md:py-10">
           <p className="mx-auto w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
             {siteConfig.slogan}
           </p>
-          <h1 className="mx-auto mt-3 max-w-3xl text-3xl font-extrabold leading-tight text-slate-900 md:mt-2 md:text-3xl">
+          <h1 className="mx-auto mt-4 max-w-3xl text-3xl font-extrabold leading-tight text-slate-900 md:text-4xl">
             {siteConfig.tagline}
           </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-slate-600 md:mt-2 md:text-sm">
+          <p className="mx-auto mt-4 max-w-2xl text-slate-600">
             {siteConfig.legalName} olarak İstanbul genelinde ev, apartman,
             iş yeri ve site tipi tüm alanlara profesyonel böcek ilaçlama
             ve koltuk yıkama hizmeti sunuyoruz.
           </p>
-          <div className="mt-5 flex flex-wrap justify-center gap-3 md:mt-4">
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
             <a
               href={buildWhatsappLink()}
               className="rounded-full bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800"
