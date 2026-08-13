@@ -64,75 +64,58 @@ export default function HomePage() {
     <div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(faqSchema) }} />
 
-      {/* Hero — full-bleed background strip, centered inner content */}
-      <section className="w-full bg-gradient-to-b from-emerald-50 to-white">
-        <div className="mx-auto max-w-7xl px-4 py-16 md:py-24">
-          <div className="grid items-center gap-10 md:grid-cols-2">
-            <div>
-              <p className="w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
-                {siteConfig.slogan}
-              </p>
-              <h1 className="mt-4 text-3xl font-extrabold leading-tight text-slate-900 md:text-5xl">
-                {siteConfig.tagline}
-              </h1>
-              <p className="mt-4 max-w-xl text-slate-600">
-                {siteConfig.legalName} olarak İstanbul genelinde ev, apartman,
-                iş yeri ve site tipi tüm alanlara profesyonel böcek ilaçlama
-                ve koltuk yıkama hizmeti sunuyoruz.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a
-                  href={buildWhatsappLink()}
-                  className="rounded-full bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800"
-                >
-                  💬 WhatsApp&apos;tan Yazın
-                </a>
-                <a
-                  href={buildTelLink()}
-                  className="rounded-full border-2 border-emerald-700 px-6 py-3 font-semibold text-emerald-800 hover:bg-emerald-50"
-                >
-                  ☎ {siteConfig.phoneDisplay}
-                </a>
-              </div>
-            </div>
+      {/* Fiyat listesi banner — the very first image on the homepage, full
+          width, same on mobile and desktop (mobile-first request). */}
+      <section className="relative h-72 w-full sm:h-96 md:h-[26rem]">
+        <Image
+          src="/fiyat-listesi.jpg"
+          alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-top"
+        />
+      </section>
 
-            {/* Fiyat listesi preview card — first image on the homepage,
-                shown right in the hero fold on both mobile and desktop. */}
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
-              <Image
-                src="/fiyat-listesi.jpg"
-                alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
-                width={1024}
-                height={1536}
-                priority
-                className="h-56 w-full object-cover object-top sm:h-72"
-              />
-              <div className="p-5">
-                <p className="text-sm font-semibold text-slate-900">Böcek İlaçlama Fiyat Listesi</p>
-                <div className="mt-3 space-y-1.5">
-                  {pricingByPlace.slice(0, 3).map((p) => (
-                    <div key={p.name} className="flex items-center justify-between gap-3 text-sm text-slate-600">
-                      <span className="truncate">{p.icon} {p.name}</span>
-                      <span className="whitespace-nowrap font-bold text-emerald-700">
-                        {p.priceFrom.toLocaleString("tr-TR")} TL&apos;den
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <a
-                  href="#fiyatlar"
-                  className="mt-4 block rounded-full bg-emerald-700 py-2 text-center text-sm font-semibold text-white hover:bg-emerald-800"
-                >
-                  Tüm Fiyatları Gör
-                </a>
-              </div>
-            </div>
+      {/* Soldan sağa akan hizmet/haşere şeridi — fiyat görselinin hemen altında */}
+      <PestMarquee />
+
+      {/* Hero text — headline, description, CTAs */}
+      <section className="w-full bg-gradient-to-b from-emerald-50 to-white">
+        <div className="mx-auto max-w-7xl px-4 py-14 text-center md:py-20">
+          <p className="mx-auto w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+            {siteConfig.slogan}
+          </p>
+          <h1 className="mx-auto mt-4 max-w-3xl text-3xl font-extrabold leading-tight text-slate-900 md:text-5xl">
+            {siteConfig.tagline}
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-slate-600">
+            {siteConfig.legalName} olarak İstanbul genelinde ev, apartman,
+            iş yeri ve site tipi tüm alanlara profesyonel böcek ilaçlama
+            ve koltuk yıkama hizmeti sunuyoruz.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <a
+              href={buildWhatsappLink()}
+              className="rounded-full bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800"
+            >
+              💬 WhatsApp&apos;tan Yazın
+            </a>
+            <a
+              href={buildTelLink()}
+              className="rounded-full border-2 border-emerald-700 px-6 py-3 font-semibold text-emerald-800 hover:bg-emerald-50"
+            >
+              ☎ {siteConfig.phoneDisplay}
+            </a>
+            <a
+              href="#fiyatlar"
+              className="rounded-full border-2 border-transparent bg-white px-6 py-3 font-semibold text-emerald-800 underline decoration-emerald-300 underline-offset-4 hover:bg-emerald-50"
+            >
+              💰 Tüm Fiyatları Gör
+            </a>
           </div>
         </div>
       </section>
-
-      {/* Soldan sağa akan hizmet/haşere şeridi — hero görselinin hemen altında */}
-      <PestMarquee />
 
       {/* Trust badges strip */}
       <section className="w-full border-y border-slate-200 bg-white">
