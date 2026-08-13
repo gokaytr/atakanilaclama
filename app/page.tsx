@@ -79,7 +79,7 @@ export default function HomePage() {
             height={1536}
             priority
             sizes="100vw"
-            className="h-auto w-full max-w-[230px] rounded-2xl object-contain shadow-md"
+            className="h-auto w-full max-w-[250px] rounded-2xl object-contain shadow-md"
           />
         </div>
 
