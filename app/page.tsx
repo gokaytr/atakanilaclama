@@ -79,7 +79,7 @@ export default function HomePage() {
             height={1536}
             priority
             sizes="100vw"
-            className="h-auto w-full max-w-[210px] rounded-2xl object-contain shadow-md"
+            className="h-auto w-full max-w-[230px] rounded-2xl object-contain shadow-md"
           />
         </div>
 
@@ -108,24 +108,23 @@ export default function HomePage() {
         </p>
       </section>
 
-      {/* Hero text — headline, description, CTAs. The trust-badges strip
-          right after this section is expected to sit below the first fold
-          on desktop; this section itself (down through the CTA buttons) is
-          the intended boundary of the initial view. */}
+      {/* Hero text — headline, description, CTAs. Vertical spacing kept
+          tight on desktop so the CTA button row (WhatsApp/phone/prices)
+          fits inside the first viewport, right under the trust line. */}
       <section className="w-full bg-gradient-to-b from-emerald-50 to-white">
-        <div className="mx-auto max-w-7xl px-4 py-12 text-center md:py-10">
+        <div className="mx-auto max-w-7xl px-4 py-12 text-center md:py-5">
           <p className="mx-auto w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
             {siteConfig.slogan}
           </p>
-          <h1 className="mx-auto mt-4 max-w-3xl text-3xl font-extrabold leading-tight text-slate-900 md:text-4xl">
+          <h1 className="mx-auto mt-4 max-w-3xl text-3xl font-extrabold leading-tight text-slate-900 md:mt-3 md:text-4xl">
             {siteConfig.tagline}
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600">
+          <p className="mx-auto mt-4 max-w-2xl text-slate-600 md:mt-2">
             {siteConfig.legalName} olarak İstanbul genelinde ev, apartman,
             iş yeri ve site tipi tüm alanlara profesyonel böcek ilaçlama
             ve koltuk yıkama hizmeti sunuyoruz.
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <div className="mt-6 flex flex-wrap justify-center gap-3 md:mt-4">
             <a
               href={buildWhatsappLink()}
               className="rounded-full bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800"
