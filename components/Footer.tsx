@@ -1,12 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/data/site-config";
 import { districts } from "@/data/districts";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 
 export default function Footer() {
   // Show a handful of districts in the footer for internal linking (SEO)
   // without overwhelming the page — full list lives on /bolgeler.
   const featured = districts.slice(0, 10);
+  const settings = useSiteSettings();
 
   return (
     <footer className="mt-16 border-t border-slate-800 bg-slate-900 text-slate-200">
@@ -30,8 +34,8 @@ export default function Footer() {
               koltuk yıkama hizmeti sunuyoruz.
             </p>
             <div className="mt-4 flex gap-3 text-sm">
-              <a href={siteConfig.social.instagram} className="text-slate-300 hover:text-white">Instagram</a>
-              <a href={siteConfig.social.facebook} className="text-slate-300 hover:text-white">Facebook</a>
+              <a href={settings.instagramUrl} className="text-slate-300 hover:text-white">Instagram</a>
+              <a href={settings.facebookUrl} className="text-slate-300 hover:text-white">Facebook</a>
             </div>
           </div>
 
@@ -66,8 +70,11 @@ export default function Footer() {
 
           <div>
             <h4 className="font-semibold text-white">İletişim</h4>
-            <p className="mt-2 text-sm text-slate-300">{siteConfig.phoneDisplay}</p>
-            <p className="text-sm text-slate-300">{siteConfig.address.city}, Türkiye</p>
+            <p className="mt-2 text-sm text-slate-300">{settings.phoneDisplay}</p>
+            <p className="text-sm text-slate-300">
+              {settings.addressStreet ? `${settings.addressStreet}, ` : ""}
+              {settings.addressCity}, Türkiye
+            </p>
             <p className="mt-3 text-xs text-slate-400">
               Sağlık Bakanlığı onaylı ürünler · İstanbul geneli hizmet
             </p>

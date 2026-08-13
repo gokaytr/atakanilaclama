@@ -4,7 +4,9 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { siteConfig, buildTelLink } from "@/data/site-config";
+import { siteConfig } from "@/data/site-config";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { buildTelLinkFrom } from "@/lib/site-settings";
 
 const NAV_LINKS = [
   { href: "/", label: "Ana Sayfa" },
@@ -19,6 +21,8 @@ const NAV_LINKS = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const settings = useSiteSettings();
+  const telLink = buildTelLinkFrom(settings);
 
   // Logo/brand click: if we're already on the homepage (very common on
   // mobile after scrolling down), a same-route Link click does nothing by
@@ -60,10 +64,10 @@ export default function Header() {
 
         <div className="flex items-center gap-2">
           <a
-            href={buildTelLink()}
+            href={telLink}
             className="hidden rounded-full bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800 md:inline-block"
           >
-            {siteConfig.phoneDisplay}
+            {settings.phoneDisplay}
           </a>
 
           {/* Hamburger — mobile only */}
@@ -105,10 +109,10 @@ export default function Header() {
             ))}
             <li className="px-4 py-3.5">
               <a
-                href={buildTelLink()}
+                href={telLink}
                 className="block rounded-full bg-emerald-700 px-4 py-2.5 text-center text-sm font-semibold text-white"
               >
-                {siteConfig.phoneDisplay}
+                {settings.phoneDisplay}
               </a>
             </li>
           </ul>

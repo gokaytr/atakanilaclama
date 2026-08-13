@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { siteConfig, buildWhatsappLink, buildTelLink } from "@/data/site-config";
 import { services, cleaningServices, pricingByPlace } from "@/data/services";
@@ -6,6 +5,8 @@ import { districts } from "@/data/districts";
 import { getNeighborhoodsByDistrict } from "@/data/neighborhoods";
 import { buildFaqSchema, toJsonLd } from "@/lib/schema";
 import PestMarquee from "@/components/PestMarquee";
+import HeroImage from "@/components/HeroImage";
+import PromoVideoSection from "@/components/PromoVideoSection";
 
 const TRUST_BADGES = [
   { icon: "📍", label: "İstanbul Geneli Hizmet" },
@@ -65,38 +66,9 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(faqSchema) }} />
 
       {/* Fiyat listesi banner — the very first image on the homepage.
-          Mobile: full image, natural aspect ratio, shortened again so the
-          ticker + trust line below are comfortably visible on first load.
-          Desktop: wide "slider" style banner (widened ~1.5cm each side),
-          cropped tighter right at the "Etkili Kalıcı Çözüm" badge. */}
-      <section className="w-full bg-emerald-50">
-        {/* Mobile / tablet — full, uncropped image, smaller again */}
-        <div className="mx-auto flex justify-center px-4 py-3 md:hidden">
-          <Image
-            src="/fiyat-listesi.jpg"
-            alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
-            width={1024}
-            height={1536}
-            priority
-            sizes="100vw"
-            className="h-auto w-full max-w-[250px] rounded-2xl object-contain shadow-md"
-          />
-        </div>
-
-        {/* Desktop — wider slider-style banner, cropped at "Etkili Kalıcı Çözüm" */}
-        <div className="mx-auto hidden justify-center px-4 py-4 md:flex">
-          <div className="relative h-[470px] w-full max-w-4xl overflow-hidden rounded-2xl shadow-md">
-            <Image
-              src="/fiyat-listesi.jpg"
-              alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
-              fill
-              priority
-              sizes="896px"
-              className="object-cover object-top"
-            />
-          </div>
-        </div>
-      </section>
+          Admin-editable: uses the uploaded hero image if one is set,
+          otherwise falls back to the bundled price-list flyer. */}
+      <HeroImage />
 
       {/* Soldan sağa akan hizmet/haşere şeridi — fiyat görselinin hemen altında */}
       <PestMarquee />
@@ -303,6 +275,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Promo video — only rendered once the admin sets one in the panel */}
+      <PromoVideoSection />
 
       {/* How it works */}
       <section className="w-full bg-slate-50">

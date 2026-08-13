@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteConfig, buildWhatsappLink, buildTelLink } from "@/data/site-config";
+import ContactCta from "@/components/ContactCta";
 
 export const metadata: Metadata = {
   title: "İletişim",
@@ -15,14 +15,7 @@ export default function ContactPage() {
         tipini ve bulunduğunuz ilçe/mahalleyi paylaşın; uygun uygulama planı
         için hızlıca destek alın.
       </p>
-      <div className="mt-6 flex flex-wrap justify-center gap-3">
-        <a href={buildWhatsappLink()} className="rounded-full bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800">
-          💬 WhatsApp&apos;tan Yazın
-        </a>
-        <a href={buildTelLink()} className="rounded-full border-2 border-emerald-700 px-6 py-3 font-semibold text-emerald-800 hover:bg-emerald-50">
-          ☎ {siteConfig.phoneDisplay}
-        </a>
-      </div>
+      <ContactCta />
     </div>
   );
 }

@@ -3,6 +3,8 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FloatingActionBar from "@/components/FloatingActionBar";
+import { SiteSettingsProvider } from "@/components/SiteSettingsProvider";
+import VisitorTracker from "@/components/VisitorTracker";
 import { siteConfig } from "@/data/site-config";
 import { buildLocalBusinessSchema, toJsonLd } from "@/lib/schema";
 
@@ -54,10 +56,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: toJsonLd(buildLocalBusinessSchema()) }}
         />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <FloatingActionBar />
+        <SiteSettingsProvider>
+          <VisitorTracker />
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <FloatingActionBar />
+        </SiteSettingsProvider>
       </body>
     </html>
   );
