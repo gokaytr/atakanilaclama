@@ -5,7 +5,7 @@ import { districts } from "@/data/districts";
 import { getNeighborhoodsByDistrict } from "@/data/neighborhoods";
 import { buildFaqSchema, toJsonLd } from "@/lib/schema";
 import PestMarquee from "@/components/PestMarquee";
-import HeroImage from "@/components/HeroImage";
+import VideoHero from "@/components/VideoHero";
 import PromoVideoSection from "@/components/PromoVideoSection";
 
 const TRUST_BADGES = [
@@ -65,58 +65,18 @@ export default function HomePage() {
     <div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(faqSchema) }} />
 
-      {/* Fiyat listesi banner — the very first image on the homepage.
-          Admin-editable: uses the uploaded hero image if one is set,
-          otherwise falls back to the bundled price-list flyer. */}
-      <HeroImage />
+      {/* Video hero — full-bleed autoplay/muted/looping background video
+          with headline + CTAs overlaid, same on mobile and desktop. */}
+      <VideoHero />
 
-      {/* Soldan sağa akan hizmet/haşere şeridi — fiyat görselinin hemen altında */}
+      {/* Soldan sağa akan hizmet/haşere şeridi — videonun hemen altında */}
       <PestMarquee />
 
-      {/* Kısa güven cümlesi — açılışta görsel + şeritten hemen sonra */}
+      {/* Kısa güven cümlesi — açılışta video + şeritten hemen sonra */}
       <section className="w-full bg-emerald-700 py-3">
         <p className="mx-auto max-w-3xl px-4 text-center text-sm font-semibold text-white sm:text-base">
           🛡️ Sağlık Bakanlığı Onaylı Ürünlerle Güvenli İlaçlama
         </p>
-      </section>
-
-      {/* Hero text — headline, description, CTAs. Vertical spacing kept
-          tight on desktop so the CTA button row (WhatsApp/phone/prices)
-          fits inside the first viewport, right under the trust line. */}
-      <section className="w-full bg-gradient-to-b from-emerald-50 to-white">
-        <div className="mx-auto max-w-7xl px-4 py-12 text-center md:py-5">
-          <p className="mx-auto w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
-            {siteConfig.slogan}
-          </p>
-          <h1 className="mx-auto mt-4 max-w-3xl text-3xl font-extrabold leading-tight text-slate-900 md:mt-3 md:text-4xl">
-            {siteConfig.tagline}
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600 md:mt-2">
-            {siteConfig.legalName} olarak İstanbul genelinde ev, apartman,
-            iş yeri ve site tipi tüm alanlara profesyonel böcek ilaçlama
-            ve koltuk yıkama hizmeti sunuyoruz.
-          </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3 md:mt-4">
-            <a
-              href={buildWhatsappLink()}
-              className="rounded-full bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800"
-            >
-              💬 WhatsApp&apos;tan Yazın
-            </a>
-            <a
-              href={buildTelLink()}
-              className="rounded-full border-2 border-emerald-700 px-6 py-3 font-semibold text-emerald-800 hover:bg-emerald-50"
-            >
-              ☎ {siteConfig.phoneDisplay}
-            </a>
-            <a
-              href="#fiyatlar"
-              className="rounded-full border-2 border-transparent bg-white px-6 py-3 font-semibold text-emerald-800 underline decoration-emerald-300 underline-offset-4 hover:bg-emerald-50"
-            >
-              💰 Tüm Fiyatları Gör
-            </a>
-          </div>
-        </div>
       </section>
 
       {/* Trust badges strip */}
