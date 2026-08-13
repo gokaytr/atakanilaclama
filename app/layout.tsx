@@ -19,10 +19,30 @@ export const metadata: Metadata = {
   },
   description:
     "İstanbul genelinde ev, iş yeri ve kurumsal alanlarda profesyonel, Sağlık Bakanlığı onaylı böcek ve haşere ilaçlama hizmeti. Hemen WhatsApp'tan yazın.",
+  keywords: [
+    "böcek ilaçlama istanbul",
+    "haşere ilaçlama",
+    "koltuk yıkama istanbul",
+    "hamam böceği ilaçlama",
+    "tahta kurusu ilaçlama",
+  ],
+  icons: {
+    icon: "/logo.jpg",
+    shortcut: "/logo.jpg",
+    apple: "/logo.jpg",
+  },
   openGraph: {
     type: "website",
     locale: "tr_TR",
     siteName: siteConfig.companyName,
+    images: [{ url: "/logo.jpg", width: 1179, height: 1196, alt: siteConfig.companyName }],
+  },
+  twitter: {
+    card: "summary",
+    title: `${siteConfig.companyName} | İstanbul Böcek İlaçlama`,
+    description:
+      "İstanbul genelinde profesyonel böcek ilaçlama ve koltuk yıkama hizmeti.",
+    images: ["/logo.jpg"],
   },
 };
 

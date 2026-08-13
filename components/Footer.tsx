@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/data/site-config";
 import { districts } from "@/data/districts";
@@ -9,10 +10,19 @@ export default function Footer() {
 
   return (
     <footer className="mt-16 border-t border-slate-800 bg-slate-900 text-slate-200">
-      <div className="mx-auto max-w-6xl px-4 py-10">
+      <div className="mx-auto max-w-7xl px-4 py-10">
         <div className="grid gap-8 md:grid-cols-4">
           <div className="md:col-span-2">
-            <h3 className="text-lg font-bold text-white">{siteConfig.companyName}</h3>
+            <div className="flex items-center gap-3">
+              <Image
+                src="/logo.jpg"
+                alt={`${siteConfig.companyName} logo`}
+                width={40}
+                height={40}
+                className="h-10 w-10 rounded-full object-cover"
+              />
+              <h3 className="text-lg font-bold text-white">{siteConfig.companyName}</h3>
+            </div>
             <p className="mt-2 text-sm text-slate-300">{siteConfig.tagline}</p>
             <p className="mt-4 text-sm text-slate-300">
               Sağlık Bakanlığı onaylı biyosidal ürünlerle İstanbul genelinde

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ServicesIndexPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-14">
+    <div className="mx-auto max-w-7xl px-4 py-14">
       <h1 className="text-3xl font-extrabold text-slate-900">Hizmetlerimiz</h1>
 
       <h2 className="mt-10 text-xl font-bold text-slate-900">Böcek İlaçlama</h2>

@@ -2,14 +2,17 @@
 // <script type="application/ld+json"> tag on each page. This is what lets
 // Google show rich results (business info, FAQs, reviews) in search.
 import { siteConfig } from "@/data/site-config";
+import { pricingByPlace } from "@/data/services";
 
 export function buildLocalBusinessSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: siteConfig.companyName,
-    image: `${siteConfig.domain}/logo.png`,
+    image: `${siteConfig.domain}/logo.jpg`,
+    logo: `${siteConfig.domain}/logo.jpg`,
     telephone: `+${siteConfig.phoneRaw}`,
+    priceRange: "₺₺",
     address: {
       "@type": "PostalAddress",
       addressLocality: siteConfig.address.city,
@@ -18,6 +21,16 @@ export function buildLocalBusinessSchema() {
     areaServed: "İstanbul",
     url: siteConfig.domain,
     sameAs: [siteConfig.social.instagram, siteConfig.social.facebook],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Böcek İlaçlama Fiyat Listesi",
+      itemListElement: pricingByPlace.map((p) => ({
+        "@type": "Offer",
+        priceCurrency: "TRY",
+        price: p.priceFrom,
+        itemOffered: { "@type": "Service", name: p.name },
+      })),
+    },
   };
 }
 

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { siteConfig, buildWhatsappLink, buildTelLink } from "@/data/site-config";
 import { services, cleaningServices, pricingByPlace } from "@/data/services";
@@ -64,7 +65,7 @@ export default function HomePage() {
 
       {/* Hero — full-bleed background strip, centered inner content */}
       <section className="w-full bg-gradient-to-b from-emerald-50 to-white">
-        <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+        <div className="mx-auto max-w-7xl px-4 py-16 md:py-24">
           <div className="grid items-center gap-10 md:grid-cols-2">
             <div>
               <p className="w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
@@ -121,7 +122,7 @@ export default function HomePage() {
 
       {/* Trust badges strip */}
       <section className="w-full border-y border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 px-4 py-8 sm:grid-cols-4">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 py-8 sm:grid-cols-4">
           {TRUST_BADGES.map((badge) => (
             <div key={badge.label} className="flex flex-col items-center gap-2 text-center">
               <span className="text-2xl">{badge.icon}</span>
@@ -131,9 +132,57 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Price list — visible, crawlable HTML pricing (mirrors the printed
+          fiyat listesi flyer) plus the flyer image itself for visual trust. */}
+      <section id="fiyatlar" className="w-full scroll-mt-20 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-14">
+          <h2 className="text-2xl font-extrabold text-slate-900">Böcek İlaçlama Fiyat Listesi</h2>
+          <p className="mt-2 max-w-2xl text-slate-600">
+            Aşağıdaki tutarlar alan tipine göre <strong>başlangıç fiyatlarıdır</strong>;
+            kesin fiyat alanın büyüklüğüne, yoğunluğa ve konuma göre değişebilir.
+            Net teklif için WhatsApp&apos;tan yazabilirsiniz.
+          </p>
+
+          <div className="mt-8 grid gap-8 lg:grid-cols-[1.3fr_1fr]">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {pricingByPlace.map((p) => (
+                <div
+                  key={p.name}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{p.icon}</span>
+                    <p className="font-semibold text-slate-900">{p.name}</p>
+                  </div>
+                  <p className="whitespace-nowrap text-lg font-extrabold text-emerald-700">
+                    {p.priceFrom.toLocaleString("tr-TR")} TL&apos;den
+                  </p>
+                </div>
+              ))}
+              <a
+                href={buildWhatsappLink("Merhaba, böcek ilaçlama fiyat teklifi almak istiyorum.")}
+                className="flex items-center justify-center rounded-xl border-2 border-dashed border-emerald-300 p-4 text-center text-sm font-semibold text-emerald-700 hover:bg-emerald-50 sm:col-span-2"
+              >
+                💬 Alanınıza özel net fiyat için WhatsApp&apos;tan yazın
+              </a>
+            </div>
+
+            <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
+              <Image
+                src="/fiyat-listesi.jpg"
+                alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
+                width={1024}
+                height={1536}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Quick pre-check detail section */}
       <section className="w-full bg-slate-50">
-        <div className="mx-auto max-w-6xl px-4 py-14">
+        <div className="mx-auto max-w-7xl px-4 py-14">
           <h2 className="text-2xl font-extrabold text-slate-900">Haşere / Bakım İhtiyacınızı Hızlıca Belirleyin</h2>
           <p className="mt-2 max-w-2xl text-slate-600">
             En sık talep aldığımız alanlar aşağıdadır — hangisi size uyuyorsa
@@ -153,7 +202,7 @@ export default function HomePage() {
 
       {/* Services grid */}
       <section className="w-full bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-14">
+        <div className="mx-auto max-w-7xl px-4 py-14">
           <h2 className="text-2xl font-extrabold text-slate-900">Böcek İlaçlama Hizmetlerimiz</h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
             {services.map((s) => (
@@ -204,7 +253,7 @@ export default function HomePage() {
 
       {/* Why us checklist */}
       <section className="w-full bg-slate-50">
-        <div className="mx-auto max-w-6xl px-4 py-14">
+        <div className="mx-auto max-w-7xl px-4 py-14">
           <h2 className="text-2xl font-extrabold text-slate-900">Neden Bizi Tercih Etmelisiniz?</h2>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             {[
@@ -226,7 +275,7 @@ export default function HomePage() {
 
       {/* Most checked areas */}
       <section className="w-full bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-14">
+        <div className="mx-auto max-w-7xl px-4 py-14">
           <h2 className="text-2xl font-extrabold text-slate-900">En Sık Kontrol Edilen Alanlar</h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-5">
             {CHECKED_AREAS.map((area) => (
@@ -242,7 +291,7 @@ export default function HomePage() {
 
       {/* How it works */}
       <section className="w-full bg-slate-50">
-        <div className="mx-auto max-w-6xl px-4 py-14">
+        <div className="mx-auto max-w-7xl px-4 py-14">
           <h2 className="text-2xl font-extrabold text-slate-900">Nasıl Çalışıyoruz?</h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
             {PROCESS_STEPS.map((step) => (
@@ -260,7 +309,7 @@ export default function HomePage() {
 
       {/* Region directory — Anadolu / Avrupa yakası */}
       <section className="w-full bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-14">
+        <div className="mx-auto max-w-7xl px-4 py-14">
           <h2 className="text-2xl font-extrabold text-slate-900">Hizmet Bölgelerimiz</h2>
           <p className="mt-2 max-w-2xl text-slate-600">
             İstanbul&apos;un 39 ilçesinin tamamında böcek ilaçlama ve koltuk
@@ -345,7 +394,7 @@ export default function HomePage() {
 
       {/* Final CTA banner */}
       <section className="w-full bg-emerald-700">
-        <div className="mx-auto max-w-6xl px-4 py-14 text-center">
+        <div className="mx-auto max-w-7xl px-4 py-14 text-center">
           <h2 className="text-2xl font-extrabold text-white md:text-3xl">
             Hemen bilgi alın, ekibimiz size dönüş yapsın
           </h2>

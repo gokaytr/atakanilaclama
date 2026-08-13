@@ -14,7 +14,7 @@ export default function DistrictsIndexPage() {
   const avrupa = districts.filter((d) => d.side === "avrupa");
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-14">
+    <div className="mx-auto max-w-7xl px-4 py-14">
       <h1 className="text-3xl font-extrabold text-slate-900">İstanbul Hizmet Bölgelerimiz</h1>
       <p className="mt-3 max-w-2xl text-slate-600">
         İstanbul&apos;un 39 ilçesinin tamamında böcek ilaçlama ve koltuk

@@ -1,14 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { siteConfig, buildTelLink } from "@/data/site-config";
 
 const NAV_LINKS = [
   { href: "/", label: "Ana Sayfa" },
   { href: "/hizmetler", label: "Hizmetlerimiz" },
-  { href: "/bolgeler", label: "Hizmet Bölgeleri" },
   { href: "/hizmetler/koltuk-yikama", label: "Koltuk Yıkama" },
+  { href: "/bolgeler", label: "Hizmet Bölgeleri" },
+  { href: "/#fiyatlar", label: "Fiyat Listesi" },
   { href: "/hakkimizda", label: "Hakkımızda" },
   { href: "/iletisim", label: "İletişim" },
 ];
@@ -18,9 +20,16 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
-          <span className="text-2xl">🛡️</span>
+          <Image
+            src="/logo.jpg"
+            alt={`${siteConfig.companyName} logo`}
+            width={44}
+            height={44}
+            className="h-11 w-11 rounded-full object-cover"
+            priority
+          />
           <span className="text-lg font-bold text-slate-900">
             {siteConfig.companyName}
           </span>
