@@ -65,12 +65,12 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(faqSchema) }} />
 
       {/* Fiyat listesi banner — the very first image on the homepage.
-          Mobile: full image, natural aspect ratio, made a bit smaller so the
-          ticker + trust line below are also visible without a full scroll.
-          Desktop: wide "slider" style banner, cropped cleanly at the end of
-          the "Etkili Kalıcı Çözüm" badge row (no partial/cut row). */}
+          Mobile: full image, natural aspect ratio, shortened again so the
+          ticker + trust line below are comfortably visible on first load.
+          Desktop: wide "slider" style banner (widened ~1.5cm each side),
+          cropped tighter right at the "Etkili Kalıcı Çözüm" badge. */}
       <section className="w-full bg-emerald-50">
-        {/* Mobile / tablet — full, uncropped image, slightly smaller */}
+        {/* Mobile / tablet — full, uncropped image, smaller again */}
         <div className="mx-auto flex justify-center px-4 py-3 md:hidden">
           <Image
             src="/fiyat-listesi.jpg"
@@ -79,19 +79,19 @@ export default function HomePage() {
             height={1536}
             priority
             sizes="100vw"
-            className="h-auto w-full max-w-[300px] rounded-2xl object-contain shadow-md"
+            className="h-auto w-full max-w-[210px] rounded-2xl object-contain shadow-md"
           />
         </div>
 
-        {/* Desktop — wide slider-style banner, cropped at "Etkili Kalıcı Çözüm" */}
+        {/* Desktop — wider slider-style banner, cropped at "Etkili Kalıcı Çözüm" */}
         <div className="mx-auto hidden justify-center px-4 py-4 md:flex">
-          <div className="relative h-[440px] w-full max-w-3xl overflow-hidden rounded-2xl shadow-md">
+          <div className="relative h-[470px] w-full max-w-4xl overflow-hidden rounded-2xl shadow-md">
             <Image
               src="/fiyat-listesi.jpg"
               alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
               fill
               priority
-              sizes="768px"
+              sizes="896px"
               className="object-cover object-top"
             />
           </div>
