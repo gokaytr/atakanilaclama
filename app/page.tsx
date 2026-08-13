@@ -5,6 +5,7 @@ import { services, cleaningServices, pricingByPlace } from "@/data/services";
 import { districts } from "@/data/districts";
 import { getNeighborhoodsByDistrict } from "@/data/neighborhoods";
 import { buildFaqSchema, toJsonLd } from "@/lib/schema";
+import PestMarquee from "@/components/PestMarquee";
 
 const TRUST_BADGES = [
   { icon: "📍", label: "İstanbul Geneli Hizmet" },
@@ -77,7 +78,7 @@ export default function HomePage() {
               <p className="mt-4 max-w-xl text-slate-600">
                 {siteConfig.legalName} olarak İstanbul genelinde ev, apartman,
                 iş yeri ve site tipi tüm alanlara profesyonel böcek ilaçlama
-                ve koltuk / halı / yatak yıkama hizmeti sunuyoruz.
+                ve koltuk yıkama hizmeti sunuyoruz.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <a
@@ -95,30 +96,43 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Floating quick-triage mini card */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg">
-              <p className="text-sm font-semibold text-slate-900">Hızlı Ön Değerlendirme</p>
-              <p className="mt-1 text-xs text-slate-500">
-                Gördüğünüz alanı seçin, size uygun hizmeti önerelim.
-              </p>
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                {PRE_CHECK_AREAS.map((area) => (
-                  <div key={area.title} className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-center">
-                    <span className="text-xl">{area.icon}</span>
-                    <p className="mt-1 text-xs font-semibold text-slate-800">{area.title}</p>
-                  </div>
-                ))}
+            {/* Fiyat listesi preview card — first image on the homepage,
+                shown right in the hero fold on both mobile and desktop. */}
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
+              <Image
+                src="/fiyat-listesi.jpg"
+                alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
+                width={1024}
+                height={1536}
+                priority
+                className="h-56 w-full object-cover object-top sm:h-72"
+              />
+              <div className="p-5">
+                <p className="text-sm font-semibold text-slate-900">Böcek İlaçlama Fiyat Listesi</p>
+                <div className="mt-3 space-y-1.5">
+                  {pricingByPlace.slice(0, 3).map((p) => (
+                    <div key={p.name} className="flex items-center justify-between gap-3 text-sm text-slate-600">
+                      <span className="truncate">{p.icon} {p.name}</span>
+                      <span className="whitespace-nowrap font-bold text-emerald-700">
+                        {p.priceFrom.toLocaleString("tr-TR")} TL&apos;den
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <a
+                  href="#fiyatlar"
+                  className="mt-4 block rounded-full bg-emerald-700 py-2 text-center text-sm font-semibold text-white hover:bg-emerald-800"
+                >
+                  Tüm Fiyatları Gör
+                </a>
               </div>
-              <a
-                href={buildWhatsappLink()}
-                className="mt-4 block rounded-full bg-emerald-700 py-2 text-center text-sm font-semibold text-white hover:bg-emerald-800"
-              >
-                Durumumu Anlatayım
-              </a>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Soldan sağa akan hizmet/haşere şeridi — hero görselinin hemen altında */}
+      <PestMarquee />
 
       {/* Trust badges strip */}
       <section className="w-full border-y border-slate-200 bg-white">
@@ -133,7 +147,7 @@ export default function HomePage() {
       </section>
 
       {/* Price list — visible, crawlable HTML pricing (mirrors the printed
-          fiyat listesi flyer) plus the flyer image itself for visual trust. */}
+          fiyat listesi flyer, which is already shown as the hero image). */}
       <section id="fiyatlar" className="w-full scroll-mt-20 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-14">
           <h2 className="text-2xl font-extrabold text-slate-900">Böcek İlaçlama Fiyat Listesi</h2>
@@ -143,39 +157,27 @@ export default function HomePage() {
             Net teklif için WhatsApp&apos;tan yazabilirsiniz.
           </p>
 
-          <div className="mt-8 grid gap-8 lg:grid-cols-[1.3fr_1fr]">
-            <div className="grid gap-3 sm:grid-cols-2">
-              {pricingByPlace.map((p) => (
-                <div
-                  key={p.name}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{p.icon}</span>
-                    <p className="font-semibold text-slate-900">{p.name}</p>
-                  </div>
-                  <p className="whitespace-nowrap text-lg font-extrabold text-emerald-700">
-                    {p.priceFrom.toLocaleString("tr-TR")} TL&apos;den
-                  </p>
-                </div>
-              ))}
-              <a
-                href={buildWhatsappLink("Merhaba, böcek ilaçlama fiyat teklifi almak istiyorum.")}
-                className="flex items-center justify-center rounded-xl border-2 border-dashed border-emerald-300 p-4 text-center text-sm font-semibold text-emerald-700 hover:bg-emerald-50 sm:col-span-2"
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {pricingByPlace.map((p) => (
+              <div
+                key={p.name}
+                className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4"
               >
-                💬 Alanınıza özel net fiyat için WhatsApp&apos;tan yazın
-              </a>
-            </div>
-
-            <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
-              <Image
-                src="/fiyat-listesi.jpg"
-                alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
-                width={1024}
-                height={1536}
-                className="h-full w-full object-cover"
-              />
-            </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{p.icon}</span>
+                  <p className="font-semibold text-slate-900">{p.name}</p>
+                </div>
+                <p className="whitespace-nowrap text-lg font-extrabold text-emerald-700">
+                  {p.priceFrom.toLocaleString("tr-TR")} TL&apos;den
+                </p>
+              </div>
+            ))}
+            <a
+              href={buildWhatsappLink("Merhaba, böcek ilaçlama fiyat teklifi almak istiyorum.")}
+              className="flex items-center justify-center rounded-xl border-2 border-dashed border-emerald-300 p-4 text-center text-sm font-semibold text-emerald-700 hover:bg-emerald-50 sm:col-span-2 lg:col-span-1"
+            >
+              💬 Alanınıza özel net fiyat için WhatsApp&apos;tan yazın
+            </a>
           </div>
         </div>
       </section>
@@ -261,7 +263,7 @@ export default function HomePage() {
               "Sağlık Bakanlığı onaylı, insan ve evcil hayvan dostu ürünler",
               "Uygulama öncesi açık bilgilendirme, sonrası takip önerileri",
               "Ev, iş yeri, apartman ve site tipi alanlara özel planlama",
-              "Böcek ilaçlama ve koltuk/halı/yatak yıkama tek elden",
+              "Böcek ilaçlama ve koltuk yıkama tek elden",
               "WhatsApp üzerinden hızlı iletişim ve yönlendirme",
             ].map((point) => (
               <div key={point} className="flex items-start gap-2 rounded-xl border border-slate-200 bg-white p-4">

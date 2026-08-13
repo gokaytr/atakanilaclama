@@ -13,7 +13,7 @@ export default function AboutPage() {
       <p className="mt-4 text-slate-700">
         {siteConfig.legalName} olarak İstanbul genelinde ev, iş yeri, apartman,
         site, depo, fabrika, restoran ve kurumsal alanlara profesyonel böcek
-        ilaçlama ve koltuk / halı / yatak yıkama hizmeti sunuyoruz. Sağlık
+        ilaçlama ve koltuk yıkama hizmeti sunuyoruz. Sağlık
         Bakanlığı onaylı biyosidal ürünlerle, insan ve evcil hayvan sağlığını
         gözeterek güvenli ve kalıcı uygulamalar yapıyoruz.
       </p>

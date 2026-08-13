@@ -10,7 +10,7 @@ import { siteConfig, buildWhatsappLink, buildTelLink } from "@/data/site-config"
 import { buildServiceSchema, buildFaqSchema, toJsonLd } from "@/lib/schema";
 
 // URL pattern: /hizmetler/hamam-bocegi-ilaclama, /hizmetler/fare-ilaclama,
-// /hizmetler/koltuk-yikama, /hizmetler/hali-yikama, ...
+// /hizmetler/koltuk-yikama, /hizmetler/sandalye-yikama, ...
 function resolveService(slug: string) {
   const pest = getServiceBySlug(slug);
   if (pest) return { ...pest, kind: "pest" as const };

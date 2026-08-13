@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { siteConfig, buildTelLink } from "@/data/site-config";
 
 const NAV_LINKS = [
@@ -17,11 +18,24 @@ const NAV_LINKS = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Logo/brand click: if we're already on the homepage (very common on
+  // mobile after scrolling down), a same-route Link click does nothing by
+  // default — so explicitly scroll back to the top instead. Otherwise let
+  // the Link's normal navigation to "/" happen.
+  function handleLogoClick(e: React.MouseEvent) {
+    setOpen(false);
+    if (pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
+        <Link href="/" className="flex items-center gap-2" onClick={handleLogoClick}>
           <Image
             src="/logo.jpg"
             alt={`${siteConfig.companyName} logo`}

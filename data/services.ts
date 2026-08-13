@@ -96,9 +96,10 @@ export type CleaningService = {
   description: string;
 };
 
-// Primary target keyword is "Koltuk Yıkama"; sub-items below give the
-// district/neighbourhood pages extra related-service internal links and
-// broaden long-tail coverage (halı yıkama, yatak yıkama, vb.).
+// Primary and only branded cleaning service is "Koltuk Yıkama" (matches the
+// company logo/legal name "Atakan Koltuk Yıkama"). Halı/yatak yıkama were
+// removed on request — koltuk (+ sandalye/sedir as a closely related item)
+// stays the sole cleaning line across the whole site.
 export const cleaningServices: CleaningService[] = [
   {
     slug: "koltuk-yikama",
@@ -106,20 +107,6 @@ export const cleaningServices: CleaningService[] = [
     icon: "🛋️",
     description:
       "Kumaş ve deri koltuklarda leke çıkarma, yıkama ve hızlı kurutma ile evinizde aynı gün temiz ve ferah bir oturma alanı.",
-  },
-  {
-    slug: "hali-yikama",
-    name: "Halı Yıkama",
-    icon: "🧼",
-    description:
-      "Makine ve el halılarında toz akarı, leke ve koku giderme; yerinde veya adrese teslim yıkama seçenekleriyle uygulanır.",
-  },
-  {
-    slug: "yatak-yikama",
-    name: "Yatak Yıkama",
-    icon: "🛏️",
-    description:
-      "Yatak ve baza yüzeylerinde toz akarı ve leke temizliği; hijyenik uyku alanı için özel köpük yöntemiyle uygulanır.",
   },
   {
     slug: "sandalye-yikama",

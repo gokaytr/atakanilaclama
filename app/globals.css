@@ -22,3 +22,20 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Seamless, edge-to-edge "soldan sağa" (left-to-right) ticker used on the
+   homepage below the hero image. The track renders the item list twice
+   back-to-back and animates from -50% to 0%, so it loops forever with no
+   blank gap at the edges regardless of viewport width. */
+@keyframes marquee-ltr {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0%); }
+}
+.animate-marquee {
+  animation: marquee-ltr 32s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}

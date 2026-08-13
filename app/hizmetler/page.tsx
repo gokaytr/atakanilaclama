@@ -5,7 +5,7 @@ import { services, cleaningServices } from "@/data/services";
 export const metadata: Metadata = {
   title: "Hizmetlerimiz",
   description:
-    "Hamam böceği, tahta kurusu, fare, karınca ilaçlama ve koltuk / halı / yatak yıkama dahil tüm hizmetlerimizi inceleyin.",
+    "Hamam böceği, tahta kurusu, fare, karınca ilaçlama ve koltuk yıkama dahil tüm hizmetlerimizi inceleyin.",
 };
 
 export default function ServicesIndexPage() {

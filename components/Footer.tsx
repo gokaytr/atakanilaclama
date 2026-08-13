@@ -27,7 +27,7 @@ export default function Footer() {
             <p className="mt-4 text-sm text-slate-300">
               Sağlık Bakanlığı onaylı biyosidal ürünlerle İstanbul genelinde
               ev, iş yeri ve kurumsal alanlara profesyonel böcek ilaçlama ve
-              koltuk / halı / yatak yıkama hizmeti sunuyoruz.
+              koltuk yıkama hizmeti sunuyoruz.
             </p>
             <div className="mt-4 flex gap-3 text-sm">
               <a href={siteConfig.social.instagram} className="text-slate-300 hover:text-white">Instagram</a>
@@ -45,10 +45,7 @@ export default function Footer() {
                 <Link href="/hizmetler/koltuk-yikama" className="hover:text-white">Koltuk Yıkama</Link>
               </li>
               <li>
-                <Link href="/hizmetler/hali-yikama" className="hover:text-white">Halı Yıkama</Link>
-              </li>
-              <li>
-                <Link href="/hizmetler/yatak-yikama" className="hover:text-white">Yatak Yıkama</Link>
+                <Link href="/hizmetler/sandalye-yikama" className="hover:text-white">Sandalye / Sedir Yıkama</Link>
               </li>
             </ul>
 
