@@ -3,7 +3,6 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FloatingActionBar from "@/components/FloatingActionBar";
-import LeadChatWidget from "@/components/LeadChatWidget";
 import { siteConfig } from "@/data/site-config";
 import { buildLocalBusinessSchema, toJsonLd } from "@/lib/schema";
 
@@ -59,7 +58,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main className="flex-1">{children}</main>
         <Footer />
         <FloatingActionBar />
-        <LeadChatWidget />
       </body>
     </html>
   );

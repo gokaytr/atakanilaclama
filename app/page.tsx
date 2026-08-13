@@ -65,20 +65,36 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(faqSchema) }} />
 
       {/* Fiyat listesi banner — the very first image on the homepage.
-          Rendered at its natural aspect ratio (no crop, nothing cut off —
-          "tam oturt"), narrower and shorter on desktop so it reads clearly
-          and the content below sits higher on the page. */}
+          Mobile: full image, natural aspect ratio, nothing cropped.
+          Desktop: shortened to just the header + "Ev İlaçlama" row so the
+          image, the ticker, the trust line and the hero CTA all fit in the
+          first viewport without scrolling. */}
       <section className="w-full bg-emerald-50">
-        <div className="mx-auto flex justify-center px-4 py-4 md:py-5">
+        {/* Mobile / tablet — full, uncropped image */}
+        <div className="mx-auto flex justify-center px-4 py-4 md:hidden">
           <Image
             src="/fiyat-listesi.jpg"
             alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
             width={1024}
             height={1536}
             priority
-            sizes="(max-width: 767px) 100vw, 380px"
-            className="h-auto w-full max-w-[420px] rounded-2xl object-contain shadow-md md:max-w-[380px]"
+            sizes="100vw"
+            className="h-auto w-full max-w-[420px] rounded-2xl object-contain shadow-md"
           />
+        </div>
+
+        {/* Desktop — short, top-cropped preview (down to "Ev İlaçlama") */}
+        <div className="mx-auto hidden justify-center px-4 py-3 md:flex">
+          <div className="relative h-56 w-[380px] overflow-hidden rounded-2xl shadow-md">
+            <Image
+              src="/fiyat-listesi.jpg"
+              alt="Çevre Sağlığı Böcek İlaçlama fiyat listesi"
+              fill
+              priority
+              sizes="380px"
+              className="object-cover object-top"
+            />
+          </div>
         </div>
       </section>
 
@@ -92,21 +108,23 @@ export default function HomePage() {
         </p>
       </section>
 
-      {/* Hero text — headline, description, CTAs */}
+      {/* Hero text — headline, description, CTAs. Desktop padding/heading
+          kept compact so the WhatsApp button is still visible in the first
+          viewport, right under the image + ticker + trust line above. */}
       <section className="w-full bg-gradient-to-b from-emerald-50 to-white">
-        <div className="mx-auto max-w-7xl px-4 py-14 text-center md:py-20">
+        <div className="mx-auto max-w-7xl px-4 py-10 text-center md:py-8">
           <p className="mx-auto w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
             {siteConfig.slogan}
           </p>
-          <h1 className="mx-auto mt-4 max-w-3xl text-3xl font-extrabold leading-tight text-slate-900 md:text-5xl">
+          <h1 className="mx-auto mt-3 max-w-3xl text-3xl font-extrabold leading-tight text-slate-900 md:mt-2 md:text-3xl">
             {siteConfig.tagline}
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600">
+          <p className="mx-auto mt-3 max-w-2xl text-slate-600 md:mt-2 md:text-sm">
             {siteConfig.legalName} olarak İstanbul genelinde ev, apartman,
             iş yeri ve site tipi tüm alanlara profesyonel böcek ilaçlama
             ve koltuk yıkama hizmeti sunuyoruz.
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <div className="mt-5 flex flex-wrap justify-center gap-3 md:mt-4">
             <a
               href={buildWhatsappLink()}
               className="rounded-full bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800"
