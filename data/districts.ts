@@ -23,21 +23,24 @@ export function toSlug(name: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
+// İstanbul'un resmi 39 ilçesi, coğrafi yakasına göre doğru şekilde
+// gruplanmıştır (14 Anadolu Yakası + 25 Avrupa Yakası = 39).
+// Not: Sarıyer coğrafi olarak Avrupa Yakası'ndadır (Beşiktaş, Kağıthane ve
+// Eyüpsultan ile komşudur) — önceki sürümde yanlışlıkla Anadolu Yakası'na
+// eklenmişti, burada düzeltildi.
 const anadoluNames = [
   "Adalar", "Ataşehir", "Beykoz", "Çekmeköy", "Kadıköy", "Kartal",
-  "Maltepe", "Pendik", "Sancaktepe", "Sarıyer", "Şile", "Tuzla", "Ümraniye",
+  "Maltepe", "Pendik", "Sancaktepe", "Sultanbeyli", "Şile", "Tuzla",
+  "Ümraniye", "Üsküdar",
 ];
 
 const avrupaNames = [
   "Arnavutköy", "Avcılar", "Bağcılar", "Bahçelievler", "Bakırköy",
-  "Başakşehir", "Bayrampaşa", "Beşiktaş", "Beyoğlu", "Büyükçekmece",
-  "Çatalca", "Esenler", "Esenyurt", "Eyüpsultan", "Fatih",
-  "Gaziosmanpaşa", "Güngören", "Kağıthane", "Küçükçekmece", "Silivri",
-  "Sultangazi", "Şişli", "Zeytinburnu",
+  "Başakşehir", "Bayrampaşa", "Beşiktaş", "Beylikdüzü", "Beyoğlu",
+  "Büyükçekmece", "Çatalca", "Esenler", "Esenyurt", "Eyüpsultan", "Fatih",
+  "Gaziosmanpaşa", "Güngören", "Kağıthane", "Küçükçekmece", "Sarıyer",
+  "Silivri", "Sultangazi", "Şişli", "Zeytinburnu",
 ];
-// Not: "Beşiktaş" firmanın fiyat listesi görselinde yer almıyordu, bölgesel
-// SEO kapsamı geniş tutulduğu için listeye eklendi. Hizmet verilmiyorsa
-// bu satırı silebilirsiniz. Üsküdar de aynı şekilde eklenebilir.
 
 export const districts: District[] = [
   ...anadoluNames.map((name) => ({ slug: toSlug(name), name, side: "anadolu" as const })),

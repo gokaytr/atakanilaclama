@@ -5,18 +5,16 @@
   --foreground: #171717;
 }
 
+/* Calmer, low-strain two-tone brand palette: muted emerald as primary
+   (buttons, links, accents) and warm slate as neutral/dark (footer, text).
+   Avoids large fills of pure saturated green-600/red-600 which was the
+   owner's main "hard on the eyes" complaint. WhatsApp green stays
+   recognizable (emerald-600/700) without being neon. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

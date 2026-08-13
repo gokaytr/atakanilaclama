@@ -72,7 +72,7 @@ export default function LeadChatWidget() {
       {/* Launcher bubble */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-20 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-green-700 text-2xl text-white shadow-lg md:bottom-6"
+        className="fixed bottom-20 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-700 text-2xl text-white shadow-lg md:bottom-6"
         aria-label="Haşere uzmanına yaz"
       >
         🪲
@@ -81,12 +81,12 @@ export default function LeadChatWidget() {
       {open && (
         <div className="fixed bottom-36 right-4 z-50 w-[calc(100%-2rem)] max-w-sm rounded-2xl border border-black/10 bg-white p-4 shadow-2xl md:bottom-24">
           <div className="mb-2 flex items-center justify-between">
-            <h3 className="font-bold text-green-900">Haşere Uzmanı</h3>
+            <h3 className="font-bold text-slate-900">Haşere Uzmanı</h3>
             <button onClick={() => setOpen(false)} aria-label="Kapat">✕</button>
           </div>
 
           {status === "success" ? (
-            <div className="py-6 text-center text-sm text-green-800">
+            <div className="py-6 text-center text-sm text-emerald-800">
               Teşekkürler! Bilgileriniz alındı, ekibimiz size en kısa
               sürede dönüş yapacak. Acil durumlar için doğrudan{" "}
               <a href={buildWhatsappLink()} className="underline">WhatsApp</a>{" "}
@@ -140,7 +140,7 @@ export default function LeadChatWidget() {
               <button
                 type="submit"
                 disabled={status === "submitting"}
-                className="w-full rounded-lg bg-green-700 py-2 font-semibold text-white disabled:opacity-60"
+                className="w-full rounded-lg bg-emerald-700 py-2 font-semibold text-white disabled:opacity-60"
               >
                 {status === "submitting" ? "Gönderiliyor..." : "Bize Ulaşın"}
               </button>

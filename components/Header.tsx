@@ -1,33 +1,96 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { siteConfig, buildTelLink } from "@/data/site-config";
 
+const NAV_LINKS = [
+  { href: "/", label: "Ana Sayfa" },
+  { href: "/hizmetler", label: "Hizmetlerimiz" },
+  { href: "/bolgeler", label: "Hizmet Bölgeleri" },
+  { href: "/hizmetler/koltuk-yikama", label: "Koltuk Yıkama" },
+  { href: "/hakkimizda", label: "Hakkımızda" },
+  { href: "/iletisim", label: "İletişim" },
+];
+
 export default function Header() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <header className="sticky top-0 z-40 border-b border-green-900/10 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
           <span className="text-2xl">🛡️</span>
-          <span className="text-lg font-bold text-green-900">
+          <span className="text-lg font-bold text-slate-900">
             {siteConfig.companyName}
           </span>
         </Link>
 
         {/* Desktop navigation — hidden on small screens */}
         <nav className="hidden items-center gap-6 text-sm font-medium text-slate-700 md:flex">
-          <Link href="/" className="hover:text-green-700">Ana Sayfa</Link>
-          <Link href="/hizmetler" className="hover:text-green-700">Hizmetlerimiz</Link>
-          <Link href="/bolgeler" className="hover:text-green-700">Hizmet Bölgeleri</Link>
-          <Link href="/hakkimizda" className="hover:text-green-700">Hakkımızda</Link>
-          <Link href="/iletisim" className="hover:text-green-700">İletişim</Link>
+          {NAV_LINKS.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-emerald-700">
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
-        <a
-          href={buildTelLink()}
-          className="hidden rounded-full bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-800 md:inline-block"
-        >
-          {siteConfig.phoneDisplay}
-        </a>
+        <div className="flex items-center gap-2">
+          <a
+            href={buildTelLink()}
+            className="hidden rounded-full bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800 md:inline-block"
+          >
+            {siteConfig.phoneDisplay}
+          </a>
+
+          {/* Hamburger — mobile only */}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Menüyü kapat" : "Menüyü aç"}
+            aria-expanded={open}
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-300 text-slate-700 md:hidden"
+          >
+            {open ? (
+              <span className="text-xl leading-none">✕</span>
+            ) : (
+              <span className="flex flex-col gap-1">
+                <span className="block h-0.5 w-5 bg-slate-700" />
+                <span className="block h-0.5 w-5 bg-slate-700" />
+                <span className="block h-0.5 w-5 bg-slate-700" />
+              </span>
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile slide-down panel — solid background, high-contrast text,
+          generous tap targets so it's easy to use with a thumb. */}
+      {open && (
+        <nav className="border-t border-slate-200 bg-white md:hidden">
+          <ul className="flex flex-col divide-y divide-slate-100">
+            {NAV_LINKS.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="block px-4 py-3.5 text-base font-medium text-slate-800 hover:bg-emerald-50"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+            <li className="px-4 py-3.5">
+              <a
+                href={buildTelLink()}
+                className="block rounded-full bg-emerald-700 px-4 py-2.5 text-center text-sm font-semibold text-white"
+              >
+                {siteConfig.phoneDisplay}
+              </a>
+            </li>
+          </ul>
+        </nav>
+      )}
     </header>
   );
 }

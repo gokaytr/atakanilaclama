@@ -82,3 +82,54 @@ export const services: ServiceCategory[] = [
 export function getServiceBySlug(slug: string): ServiceCategory | undefined {
   return services.find((s) => s.slug === slug);
 }
+
+// ---------------------------------------------------------------------
+// Koltuk Yıkama (upholstery/carpet/mattress cleaning) — the company's
+// second service line (legal name: "... (Atakan Koltuk Yıkama)").
+// Mirrors the -bocek-ilaclama district/neighbourhood SEO pattern via the
+// -koltuk-yikama URL suffix (see app/[slug]/page.tsx).
+// ---------------------------------------------------------------------
+export type CleaningService = {
+  slug: string;
+  name: string;
+  icon: string;
+  description: string;
+};
+
+// Primary target keyword is "Koltuk Yıkama"; sub-items below give the
+// district/neighbourhood pages extra related-service internal links and
+// broaden long-tail coverage (halı yıkama, yatak yıkama, vb.).
+export const cleaningServices: CleaningService[] = [
+  {
+    slug: "koltuk-yikama",
+    name: "Koltuk Yıkama",
+    icon: "🛋️",
+    description:
+      "Kumaş ve deri koltuklarda leke çıkarma, yıkama ve hızlı kurutma ile evinizde aynı gün temiz ve ferah bir oturma alanı.",
+  },
+  {
+    slug: "hali-yikama",
+    name: "Halı Yıkama",
+    icon: "🧼",
+    description:
+      "Makine ve el halılarında toz akarı, leke ve koku giderme; yerinde veya adrese teslim yıkama seçenekleriyle uygulanır.",
+  },
+  {
+    slug: "yatak-yikama",
+    name: "Yatak Yıkama",
+    icon: "🛏️",
+    description:
+      "Yatak ve baza yüzeylerinde toz akarı ve leke temizliği; hijyenik uyku alanı için özel köpük yöntemiyle uygulanır.",
+  },
+  {
+    slug: "sandalye-yikama",
+    name: "Sandalye / Sedir Yıkama",
+    icon: "🪑",
+    description:
+      "Ev, kafe ve iş yerlerindeki kumaş sandalye, sedir ve puf gibi mobilyalarda profesyonel leke ve kir temizliği.",
+  },
+];
+
+export function getCleaningServiceBySlug(slug: string): CleaningService | undefined {
+  return cleaningServices.find((s) => s.slug === slug);
+}

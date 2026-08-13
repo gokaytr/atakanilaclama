@@ -25,8 +25,14 @@ export function buildServiceSchema(params: {
   serviceName: string;
   description: string;
   districtName?: string;
+  neighborhoodName?: string;
 }) {
-  const { serviceName, description, districtName } = params;
+  const { serviceName, description, districtName, neighborhoodName } = params;
+  const areaServed = neighborhoodName && districtName
+    ? `${neighborhoodName} Mahallesi, ${districtName}, İstanbul`
+    : districtName
+      ? `${districtName}, İstanbul`
+      : "İstanbul";
   return {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -36,7 +42,7 @@ export function buildServiceSchema(params: {
       name: siteConfig.companyName,
       telephone: `+${siteConfig.phoneRaw}`,
     },
-    areaServed: districtName ? `${districtName}, İstanbul` : "İstanbul",
+    areaServed,
     description,
   };
 }
