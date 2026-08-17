@@ -8,6 +8,7 @@
 // so the hero always renders correctly).
 import { buildWhatsappLinkFrom, buildTelLinkFrom } from "@/lib/site-settings";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { logClick } from "@/lib/click-tracking";
 
 export default function VideoHero() {
   const settings = useSiteSettings();
@@ -49,12 +50,14 @@ export default function VideoHero() {
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <a
               href={buildWhatsappLinkFrom(settings)}
+              onClick={() => logClick("whatsapp")}
               className="rounded-full bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-500"
             >
               💬 WhatsApp&apos;tan Yazın
             </a>
             <a
               href={buildTelLinkFrom(settings)}
+              onClick={() => logClick("phone")}
               className="rounded-full border-2 border-white px-6 py-3 font-semibold text-white hover:bg-white/10"
             >
               ☎ {settings.phoneDisplay}

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { siteConfig } from "@/data/site-config";
 import { districts } from "@/data/districts";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
@@ -12,6 +13,10 @@ export default function Footer() {
   // without overwhelming the page — full list lives on /bolgeler.
   const featured = districts.slice(0, 10);
   const settings = useSiteSettings();
+  const pathname = usePathname();
+
+  // Admin panel has its own dedicated sidebar shell.
+  if (pathname.startsWith("/admin")) return null;
 
   return (
     <footer className="mt-16 border-t border-slate-800 bg-slate-900 text-slate-200">
@@ -91,7 +96,7 @@ export default function Footer() {
             © {new Date().getFullYear()} {siteConfig.legalName}. Tüm hakları saklıdır.
           </p>
 
-          {(settings.instagramUrl || settings.facebookUrl) && (
+          {(settings.instagramUrl || settings.facebookUrl || settings.youtubeUrl) && (
             <div className="flex gap-3">
               {settings.instagramUrl && (
                 <a
@@ -116,6 +121,19 @@ export default function Footer() {
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
                     <path d="M13.5 21v-7.6h2.55l.38-2.96h-2.93V8.55c0-.86.24-1.44 1.47-1.44h1.57V4.46A21 21 0 0 0 14.2 4.3c-2.24 0-3.78 1.37-3.78 3.87v2.27H7.86v2.96h2.56V21h3.08Z" />
+                  </svg>
+                </a>
+              )}
+              {settings.youtubeUrl && (
+                <a
+                  href={settings.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-700 text-slate-300 transition hover:border-emerald-500 hover:text-emerald-400"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.8 12l-6.2 3.6Z" />
                   </svg>
                 </a>
               )}

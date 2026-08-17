@@ -2,6 +2,7 @@
 
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import { buildGoogleMapsLinkFrom, buildTelLinkFrom, buildWhatsappLinkFrom } from "@/lib/site-settings";
+import { logClick } from "@/lib/click-tracking";
 
 // Live WhatsApp/phone/address block for the /iletisim page — split out
 // from the page itself (a server component, so it can keep exporting
@@ -14,12 +15,14 @@ export default function ContactCta() {
       <div className="mt-6 flex flex-wrap justify-center gap-3">
         <a
           href={buildWhatsappLinkFrom(settings)}
+          onClick={() => logClick("whatsapp")}
           className="rounded-full bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800"
         >
           💬 WhatsApp&apos;tan Yazın
         </a>
         <a
           href={buildTelLinkFrom(settings)}
+          onClick={() => logClick("phone")}
           className="rounded-full border-2 border-emerald-700 px-6 py-3 font-semibold text-emerald-800 hover:bg-emerald-50"
         >
           ☎ {settings.phoneDisplay}

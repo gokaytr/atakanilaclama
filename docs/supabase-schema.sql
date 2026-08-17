@@ -52,6 +52,7 @@ create table if not exists public.site_settings (
   hero_badge text,
   hero_title text,
   hero_description text,
+  youtube_url text,
   updated_at timestamptz not null default now()
 );
 
@@ -78,7 +79,8 @@ create table if not exists public.page_views (
   id bigint generated always as identity primary key,
   created_at timestamptz not null default now(),
   visitor_id text not null,
-  page_path text not null
+  page_path text not null,
+  is_ads boolean not null default false
 );
 
 create index if not exists page_views_visitor_id_idx on public.page_views (visitor_id);
@@ -145,6 +147,58 @@ create policy "Admins can delete site media"
     bucket_id = 'site-media'
     and (auth.jwt() ->> 'email') in ('doganay9553@gmail.com', 'gokayterzi@gmail.com')
   );
+
+-- ---------------------------------------------------------------------
+-- click_events — logs WhatsApp/phone CTA clicks (first-party, no
+-- cookies), tagged is_ads=true when the visitor arrived via a Google Ads
+-- click (gclid param, or utm_medium=cpc / utm_source=google). Powers the
+-- admin "Özet" dashboard.
+-- ---------------------------------------------------------------------
+create table if not exists public.click_events (
+  id bigint generated always as identity primary key,
+  created_at timestamptz not null default now(),
+  visitor_id text not null,
+  event_type text not null check (event_type in ('whatsapp', 'phone')),
+  page_path text not null,
+  is_ads boolean not null default false
+);
+
+create index if not exists click_events_created_at_idx on public.click_events (created_at);
+create index if not exists click_events_event_type_idx on public.click_events (event_type);
+
+alter table public.click_events enable row level security;
+
+create policy "Anyone can log a click"
+  on public.click_events for insert
+  to anon, authenticated
+  with check (true);
+
+create policy "Admins can read click events"
+  on public.click_events for select
+  to authenticated
+  using ((auth.jwt() ->> 'email') in ('doganay9553@gmail.com', 'gokayterzi@gmail.com'));
+
+create or replace view public.click_stats as
+select
+  count(*) filter (where event_type = 'whatsapp')::bigint as whatsapp_clicks,
+  count(*) filter (where event_type = 'phone')::bigint as phone_clicks,
+  count(*) filter (where is_ads)::bigint as ads_clicks,
+  count(*) filter (where event_type = 'whatsapp' and created_at >= now() - interval '30 days')::bigint as whatsapp_clicks_30d,
+  count(*) filter (where event_type = 'phone' and created_at >= now() - interval '30 days')::bigint as phone_clicks_30d,
+  count(*) filter (where is_ads and created_at >= now() - interval '30 days')::bigint as ads_clicks_30d
+from public.click_events;
+
+alter view public.click_stats set (security_invoker = on);
+
+create or replace view public.ads_visit_stats as
+select
+  count(*) filter (where is_ads)::bigint as ads_pageviews,
+  count(distinct visitor_id) filter (where is_ads)::bigint as ads_unique_visitors,
+  count(*) filter (where is_ads and created_at >= now() - interval '30 days')::bigint as ads_pageviews_30d,
+  count(distinct visitor_id) filter (where is_ads and created_at >= now() - interval '30 days')::bigint as ads_unique_visitors_30d
+from public.page_views;
+
+alter view public.ads_visit_stats set (security_invoker = on);
 
 -- ---------------------------------------------------------------------
 -- Admin login: passwordless magic-link (Supabase Auth "OTP" email).

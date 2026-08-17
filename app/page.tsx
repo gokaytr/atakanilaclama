@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { siteConfig, buildWhatsappLink, buildTelLink } from "@/data/site-config";
+import { buildWhatsappLink } from "@/data/site-config";
 import { services, cleaningServices, pricingByPlace } from "@/data/services";
 import { districts } from "@/data/districts";
 import { getNeighborhoodsByDistrict } from "@/data/neighborhoods";
@@ -7,6 +7,7 @@ import { buildFaqSchema, toJsonLd } from "@/lib/schema";
 import PestMarquee from "@/components/PestMarquee";
 import VideoHero from "@/components/VideoHero";
 import PromoVideoSection from "@/components/PromoVideoSection";
+import FinalCtaButtons from "@/components/FinalCtaButtons";
 
 const TRUST_BADGES = [
   { icon: "📍", label: "İstanbul Geneli Hizmet" },
@@ -352,20 +353,7 @@ export default function HomePage() {
             İlçenizi ve ihtiyacınızı paylaşın, size en uygun uygulama planını
             sunalım.
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <a
-              href={buildWhatsappLink()}
-              className="rounded-full bg-white px-6 py-3 font-semibold text-emerald-800 hover:bg-emerald-50"
-            >
-              💬 WhatsApp&apos;tan Yazın
-            </a>
-            <a
-              href={buildTelLink()}
-              className="rounded-full border-2 border-white px-6 py-3 font-semibold text-white hover:bg-emerald-800"
-            >
-              ☎ {siteConfig.phoneDisplay}
-            </a>
-          </div>
+          <FinalCtaButtons />
         </div>
       </section>
     </div>

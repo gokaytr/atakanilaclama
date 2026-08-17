@@ -12,6 +12,7 @@ type SettingsForm = {
   address_street: string;
   instagram_url: string;
   facebook_url: string;
+  youtube_url: string | null;
   hero_image_url: string | null;
   promo_video_url: string | null;
   google_tag_id: string | null;
@@ -29,6 +30,7 @@ const EMPTY: SettingsForm = {
   address_street: "",
   instagram_url: "",
   facebook_url: "",
+  youtube_url: null,
   hero_image_url: null,
   promo_video_url: null,
   google_tag_id: null,
@@ -170,6 +172,7 @@ export default function ContentTab() {
         address_street: form.address_street,
         instagram_url: form.instagram_url,
         facebook_url: form.facebook_url,
+        youtube_url: form.youtube_url || null,
         hero_image_url: form.hero_image_url,
         promo_video_url: form.promo_video_url || null,
         google_tag_id: form.google_tag_id || null,
@@ -241,6 +244,14 @@ export default function ContentTab() {
               value={form.facebook_url}
               onChange={(e) => update("facebook_url", e.target.value)}
               placeholder="https://facebook.com/..."
+              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            />
+          </Field>
+          <Field label="YouTube linki (boş bırakırsanız gizlenir)">
+            <input
+              value={form.youtube_url ?? ""}
+              onChange={(e) => update("youtube_url", e.target.value || null)}
+              placeholder="https://youtube.com/@..."
               className="w-full rounded-lg border border-slate-300 px-3 py-2"
             />
           </Field>

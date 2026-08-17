@@ -25,14 +25,28 @@ function getOrCreateVisitorId(): string {
   }
 }
 
+function isAdsVisit(): boolean {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("gclid") || params.has("gbraid") || params.has("wbraid")) return true;
+    if (params.get("utm_medium") === "cpc") return true;
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 export default function VisitorTracker() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Admin's own visits shouldn't skew the public visitor stats.
+    if (pathname.startsWith("/admin")) return;
+
     const visitorId = getOrCreateVisitorId();
     supabase
       .from("page_views")
-      .insert({ visitor_id: visitorId, page_path: pathname })
+      .insert({ visitor_id: visitorId, page_path: pathname, is_ads: isAdsVisit() })
       .then(({ error }) => {
         if (error) console.warn("[visitor-tracker] insert failed:", error.message);
       });

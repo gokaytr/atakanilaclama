@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { siteConfig } from "@/data/site-config";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import { buildTelLinkFrom } from "@/lib/site-settings";
+import { logClick } from "@/lib/click-tracking";
 
 const NAV_LINKS = [
   { href: "/", label: "Ana Sayfa" },
@@ -35,6 +36,10 @@ export default function Header() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
+
+  // Admin panel has its own dedicated sidebar shell — the public marketing
+  // header shouldn't appear there.
+  if (pathname.startsWith("/admin")) return null;
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
@@ -65,6 +70,7 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <a
             href={telLink}
+            onClick={() => logClick("phone")}
             className="hidden rounded-full bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800 md:inline-block"
           >
             {settings.phoneDisplay}
@@ -110,12 +116,13 @@ export default function Header() {
             <li className="px-4 py-3.5">
               <a
                 href={telLink}
+                onClick={() => logClick("phone")}
                 className="block rounded-full bg-emerald-700 px-4 py-2.5 text-center text-sm font-semibold text-white"
               >
                 {settings.phoneDisplay}
               </a>
             </li>
-            {(settings.instagramUrl || settings.facebookUrl) && (
+            {(settings.instagramUrl || settings.facebookUrl || settings.youtubeUrl) && (
               <li className="flex justify-center gap-5 px-4 py-3.5 text-sm font-medium text-slate-600">
                 {settings.instagramUrl && (
                   <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-700">
@@ -125,6 +132,11 @@ export default function Header() {
                 {settings.facebookUrl && (
                   <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-700">
                     Facebook
+                  </a>
+                )}
+                {settings.youtubeUrl && (
+                  <a href={settings.youtubeUrl} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-700">
+                    YouTube
                   </a>
                 )}
               </li>

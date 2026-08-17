@@ -14,6 +14,7 @@ export type SiteSettings = {
   addressStreet: string;
   instagramUrl: string;
   facebookUrl: string;
+  youtubeUrl: string;
   heroImageUrl: string | null;
   promoVideoUrl: string | null;
   googleTagId: string | null;
@@ -31,6 +32,7 @@ export const defaultSiteSettings: SiteSettings = {
   addressStreet: siteConfig.address.street,
   instagramUrl: siteConfig.social.instagram,
   facebookUrl: siteConfig.social.facebook,
+  youtubeUrl: "",
   heroImageUrl: null,
   promoVideoUrl: null,
   googleTagId: null,
@@ -48,6 +50,7 @@ type SiteSettingsRow = {
   address_street: string;
   instagram_url: string;
   facebook_url: string;
+  youtube_url: string | null;
   hero_image_url: string | null;
   promo_video_url: string | null;
   google_tag_id: string | null;
@@ -64,7 +67,7 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
   const { data, error } = await supabase
     .from("site_settings")
     .select(
-      "phone_display, phone_raw, whatsapp_message, address_city, address_street, instagram_url, facebook_url, hero_image_url, promo_video_url, google_tag_id, hero_video_url, hero_badge, hero_title, hero_description"
+      "phone_display, phone_raw, whatsapp_message, address_city, address_street, instagram_url, facebook_url, youtube_url, hero_image_url, promo_video_url, google_tag_id, hero_video_url, hero_badge, hero_title, hero_description"
     )
     .eq("id", 1)
     .maybeSingle<SiteSettingsRow>();
@@ -79,6 +82,7 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
     addressStreet: data.address_street ?? defaultSiteSettings.addressStreet,
     instagramUrl: data.instagram_url ?? defaultSiteSettings.instagramUrl,
     facebookUrl: data.facebook_url ?? defaultSiteSettings.facebookUrl,
+    youtubeUrl: data.youtube_url ?? defaultSiteSettings.youtubeUrl,
     heroImageUrl: data.hero_image_url || null,
     promoVideoUrl: data.promo_video_url || null,
     googleTagId: data.google_tag_id || null,
