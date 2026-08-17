@@ -1,80 +1,71 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { siteConfig } from "@/data/site-config";
 
-// Passwordless magic-link login, restricted to the two admin emails set in
-// data/site-config.ts (`adminEmails`). The email field only accepts those
-// two addresses — anyone else is rejected before a request even reaches
-// Supabase. The real security boundary is server-side (RLS policies check
-// the same allowlist), this is just so a stranger gets a clear message
-// instead of a login form that looks like it might work for them.
+// Email + password login, restricted to the two admin emails in
+// data/site-config.ts (`adminEmails`). Even if someone guessed the
+// password, the email itself is checked here and again server-side (RLS
+// policies use the same allowlist), so a third email can never get in.
 export default function AdminLoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     const normalized = email.trim().toLowerCase();
 
     if (!siteConfig.adminEmails.map((a) => a.toLowerCase()).includes(normalized)) {
-      setStatus("error");
-      setErrorMsg("Bu e-posta ile admin girişi yapılamaz.");
+      setError("Bu e-posta ile admin girişi yapılamaz.");
       return;
     }
 
-    setStatus("sending");
-    setErrorMsg(null);
-    const { error } = await supabase.auth.signInWithOtp({
-      email: normalized,
-      options: { emailRedirectTo: `${window.location.origin}/admin` },
-    });
+    setLoading(true);
+    setError(null);
+    const { error } = await supabase.auth.signInWithPassword({ email: normalized, password });
+    setLoading(false);
 
     if (error) {
-      setStatus("error");
-      setErrorMsg("Giriş linki gönderilemedi. Lütfen tekrar deneyin.");
+      setError("Giriş başarısız. E-posta veya şifre hatalı.");
       return;
     }
-    setStatus("sent");
+    router.push("/admin");
   }
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
-      <h1 className="mb-2 text-2xl font-bold text-slate-900">Admin Girişi</h1>
-      <p className="mb-6 text-sm text-slate-500">
-        Yetkili e-posta adresinizi girin, size giriş linki gönderelim.
-      </p>
-
-      {status === "sent" ? (
-        <p className="rounded-lg bg-emerald-50 p-4 text-sm text-emerald-800">
-          ✓ <strong>{email}</strong> adresine bir giriş linki gönderdik.
-          Gelen kutunuzu (ve gerekirse spam klasörünü) kontrol edip linke
-          tıklayın.
-        </p>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <input
-            type="email"
-            required
-            placeholder="E-posta"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
-          />
-          {status === "error" && errorMsg && (
-            <p className="text-sm text-red-600">{errorMsg}</p>
-          )}
-          <button
-            type="submit"
-            disabled={status === "sending"}
-            className="w-full rounded-lg bg-emerald-700 py-2 font-semibold text-white disabled:opacity-60"
-          >
-            {status === "sending" ? "Gönderiliyor..." : "Giriş Linki Gönder"}
-          </button>
-        </form>
-      )}
+      <h1 className="mb-6 text-2xl font-bold text-slate-900">Admin Girişi</h1>
+      <form onSubmit={handleLogin} className="space-y-3">
+        <input
+          type="email"
+          required
+          placeholder="E-posta"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full rounded-lg border border-slate-300 px-3 py-2"
+        />
+        <input
+          type="password"
+          required
+          placeholder="Şifre"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full rounded-lg border border-slate-300 px-3 py-2"
+        />
+        {error && <p className="text-sm text-red-600">{error}</p>}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-lg bg-emerald-700 py-2 font-semibold text-white disabled:opacity-60"
+        >
+          {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
+        </button>
+      </form>
     </div>
   );
 }
