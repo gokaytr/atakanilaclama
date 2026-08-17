@@ -18,6 +18,8 @@ export type SiteSettings = {
   heroImageUrl: string | null;
   promoVideoUrl: string | null;
   googleTagId: string | null;
+  googleAdsWhatsappConversion: string | null;
+  googleAdsPhoneConversion: string | null;
   heroVideoUrl: string | null;
   heroBadge: string;
   heroTitle: string;
@@ -36,6 +38,8 @@ export const defaultSiteSettings: SiteSettings = {
   heroImageUrl: null,
   promoVideoUrl: null,
   googleTagId: null,
+  googleAdsWhatsappConversion: null,
+  googleAdsPhoneConversion: null,
   heroVideoUrl: null,
   heroBadge: siteConfig.slogan,
   heroTitle: siteConfig.tagline,
@@ -54,6 +58,8 @@ type SiteSettingsRow = {
   hero_image_url: string | null;
   promo_video_url: string | null;
   google_tag_id: string | null;
+  google_ads_whatsapp_conversion: string | null;
+  google_ads_phone_conversion: string | null;
   hero_video_url: string | null;
   hero_badge: string | null;
   hero_title: string | null;
@@ -67,7 +73,7 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
   const { data, error } = await supabase
     .from("site_settings")
     .select(
-      "phone_display, phone_raw, whatsapp_message, address_city, address_street, instagram_url, facebook_url, youtube_url, hero_image_url, promo_video_url, google_tag_id, hero_video_url, hero_badge, hero_title, hero_description"
+      "phone_display, phone_raw, whatsapp_message, address_city, address_street, instagram_url, facebook_url, youtube_url, hero_image_url, promo_video_url, google_tag_id, google_ads_whatsapp_conversion, google_ads_phone_conversion, hero_video_url, hero_badge, hero_title, hero_description"
     )
     .eq("id", 1)
     .maybeSingle<SiteSettingsRow>();
@@ -86,6 +92,8 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
     heroImageUrl: data.hero_image_url || null,
     promoVideoUrl: data.promo_video_url || null,
     googleTagId: data.google_tag_id || null,
+    googleAdsWhatsappConversion: data.google_ads_whatsapp_conversion || null,
+    googleAdsPhoneConversion: data.google_ads_phone_conversion || null,
     heroVideoUrl: data.hero_video_url || null,
     heroBadge: data.hero_badge || defaultSiteSettings.heroBadge,
     heroTitle: data.hero_title || defaultSiteSettings.heroTitle,

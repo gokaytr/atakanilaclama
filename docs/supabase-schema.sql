@@ -53,6 +53,8 @@ create table if not exists public.site_settings (
   hero_title text,
   hero_description text,
   youtube_url text,
+  google_ads_whatsapp_conversion text,
+  google_ads_phone_conversion text,
   updated_at timestamptz not null default now()
 );
 

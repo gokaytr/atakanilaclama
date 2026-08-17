@@ -50,14 +50,14 @@ export default function VideoHero() {
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <a
               href={buildWhatsappLinkFrom(settings)}
-              onClick={() => logClick("whatsapp")}
+              onClick={() => logClick("whatsapp", settings.googleAdsWhatsappConversion)}
               className="rounded-full bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-500"
             >
               💬 WhatsApp&apos;tan Yazın
             </a>
             <a
               href={buildTelLinkFrom(settings)}
-              onClick={() => logClick("phone")}
+              onClick={() => logClick("phone", settings.googleAdsPhoneConversion)}
               className="rounded-full border-2 border-white px-6 py-3 font-semibold text-white hover:bg-white/10"
             >
               ☎ {settings.phoneDisplay}

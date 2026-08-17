@@ -70,7 +70,7 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <a
             href={telLink}
-            onClick={() => logClick("phone")}
+            onClick={() => logClick("phone", settings.googleAdsPhoneConversion)}
             className="hidden rounded-full bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800 md:inline-block"
           >
             {settings.phoneDisplay}
@@ -116,7 +116,7 @@ export default function Header() {
             <li className="px-4 py-3.5">
               <a
                 href={telLink}
-                onClick={() => logClick("phone")}
+                onClick={() => logClick("phone", settings.googleAdsPhoneConversion)}
                 className="block rounded-full bg-emerald-700 px-4 py-2.5 text-center text-sm font-semibold text-white"
               >
                 {settings.phoneDisplay}

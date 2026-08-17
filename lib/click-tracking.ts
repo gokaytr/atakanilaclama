@@ -32,8 +32,27 @@ function isAdsVisit(): boolean {
   }
 }
 
-export function logClick(eventType: "whatsapp" | "phone") {
+type GtagWindow = Window & { gtag?: (...args: unknown[]) => void };
+
+// `adsConversionSendTo` is the exact "AW-XXXXXXXXX/label" string Google Ads
+// shows when you create a conversion action for this button (Google Ads >
+// Dönüşümler > ilgili işlem > Ayarları düzenle > Etiket kurulumu). Set from
+// the admin panel — when present, fires the real Google Ads conversion
+// event so ad campaigns can see and optimize for these clicks.
+export function logClick(eventType: "whatsapp" | "phone", adsConversionSendTo?: string | null) {
   if (typeof window === "undefined") return;
+
+  if (adsConversionSendTo) {
+    try {
+      (window as GtagWindow).gtag?.("event", "conversion", {
+        send_to: adsConversionSendTo,
+        value: 1.0,
+        currency: "TRY",
+      });
+    } catch {
+      // Never let ads tracking break the button either.
+    }
+  }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

@@ -15,14 +15,14 @@ export default function ContactCta() {
       <div className="mt-6 flex flex-wrap justify-center gap-3">
         <a
           href={buildWhatsappLinkFrom(settings)}
-          onClick={() => logClick("whatsapp")}
+          onClick={() => logClick("whatsapp", settings.googleAdsWhatsappConversion)}
           className="rounded-full bg-emerald-700 px-6 py-3 font-semibold text-white hover:bg-emerald-800"
         >
           💬 WhatsApp&apos;tan Yazın
         </a>
         <a
           href={buildTelLinkFrom(settings)}
-          onClick={() => logClick("phone")}
+          onClick={() => logClick("phone", settings.googleAdsPhoneConversion)}
           className="rounded-full border-2 border-emerald-700 px-6 py-3 font-semibold text-emerald-800 hover:bg-emerald-50"
         >
           ☎ {settings.phoneDisplay}

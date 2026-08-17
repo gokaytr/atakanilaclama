@@ -16,6 +16,8 @@ type SettingsForm = {
   hero_image_url: string | null;
   promo_video_url: string | null;
   google_tag_id: string | null;
+  google_ads_whatsapp_conversion: string | null;
+  google_ads_phone_conversion: string | null;
   hero_video_url: string | null;
   hero_badge: string | null;
   hero_title: string | null;
@@ -34,6 +36,8 @@ const EMPTY: SettingsForm = {
   hero_image_url: null,
   promo_video_url: null,
   google_tag_id: null,
+  google_ads_whatsapp_conversion: null,
+  google_ads_phone_conversion: null,
   hero_video_url: null,
   hero_badge: null,
   hero_title: null,
@@ -176,6 +180,8 @@ export default function ContentTab() {
         hero_image_url: form.hero_image_url,
         promo_video_url: form.promo_video_url || null,
         google_tag_id: form.google_tag_id || null,
+        google_ads_whatsapp_conversion: form.google_ads_whatsapp_conversion || null,
+        google_ads_phone_conversion: form.google_ads_phone_conversion || null,
         hero_badge: form.hero_badge || null,
         hero_title: form.hero_title || null,
         hero_description: form.hero_description || null,
@@ -370,7 +376,7 @@ export default function ContentTab() {
           Google Ads hesabınızdaki dönüşüm izleme (Tag) ID&apos;sini girin (ör. AW-1234567890).
           Boş bırakırsanız siteye hiçbir Google Ads kodu eklenmez.
         </p>
-        <div className="mt-4">
+        <div className="mt-4 space-y-3">
           <Field label="Google Ads Tag ID">
             <input
               value={form.google_tag_id ?? ""}
@@ -379,6 +385,26 @@ export default function ContentTab() {
               className="w-full rounded-lg border border-slate-300 px-3 py-2"
             />
           </Field>
+          <Field label="WhatsApp dönüşüm etiketi (Google Ads &gt; Dönüşümler &gt; WhatsApp Tıklama &gt; Etiket kurulumu sayfasındaki 'send_to' değeri)">
+            <input
+              value={form.google_ads_whatsapp_conversion ?? ""}
+              onChange={(e) => update("google_ads_whatsapp_conversion", e.target.value || null)}
+              placeholder="AW-1234567890/AbCdEfGhIjK"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            />
+          </Field>
+          <Field label="Telefon dönüşüm etiketi (aynı şekilde, Telefon Araması dönüşümü için)">
+            <input
+              value={form.google_ads_phone_conversion ?? ""}
+              onChange={(e) => update("google_ads_phone_conversion", e.target.value || null)}
+              placeholder="AW-1234567890/XyZ12345678"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            />
+          </Field>
+          <p className="text-xs text-slate-400">
+            Bu iki alan boşsa siteye sadece temel Google Ads etiketi eklenir; doldurulduğunda
+            WhatsApp/telefon butonlarına tıklandığında Google Ads&apos;e gerçek dönüşüm olarak bildirilir.
+          </p>
         </div>
       </section>
 
