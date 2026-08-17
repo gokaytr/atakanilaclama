@@ -115,6 +115,20 @@ export default function Header() {
                 {settings.phoneDisplay}
               </a>
             </li>
+            {(settings.instagramUrl || settings.facebookUrl) && (
+              <li className="flex justify-center gap-5 px-4 py-3.5 text-sm font-medium text-slate-600">
+                {settings.instagramUrl && (
+                  <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-700">
+                    Instagram
+                  </a>
+                )}
+                {settings.facebookUrl && (
+                  <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-700">
+                    Facebook
+                  </a>
+                )}
+              </li>
+            )}
           </ul>
         </nav>
       )}
