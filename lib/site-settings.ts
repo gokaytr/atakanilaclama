@@ -17,6 +17,10 @@ export type SiteSettings = {
   heroImageUrl: string | null;
   promoVideoUrl: string | null;
   googleTagId: string | null;
+  heroVideoUrl: string | null;
+  heroBadge: string;
+  heroTitle: string;
+  heroDescription: string;
 };
 
 export const defaultSiteSettings: SiteSettings = {
@@ -30,6 +34,10 @@ export const defaultSiteSettings: SiteSettings = {
   heroImageUrl: null,
   promoVideoUrl: null,
   googleTagId: null,
+  heroVideoUrl: null,
+  heroBadge: siteConfig.slogan,
+  heroTitle: siteConfig.tagline,
+  heroDescription: `${siteConfig.legalName} olarak İstanbul genelinde ev, apartman, iş yeri ve site tipi tüm alanlara profesyonel böcek ilaçlama ve koltuk yıkama hizmeti sunuyoruz.`,
 };
 
 type SiteSettingsRow = {
@@ -43,6 +51,10 @@ type SiteSettingsRow = {
   hero_image_url: string | null;
   promo_video_url: string | null;
   google_tag_id: string | null;
+  hero_video_url: string | null;
+  hero_badge: string | null;
+  hero_title: string | null;
+  hero_description: string | null;
 };
 
 // Fetches the live settings row. Returns the static defaults on any error
@@ -52,7 +64,7 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
   const { data, error } = await supabase
     .from("site_settings")
     .select(
-      "phone_display, phone_raw, whatsapp_message, address_city, address_street, instagram_url, facebook_url, hero_image_url, promo_video_url, google_tag_id"
+      "phone_display, phone_raw, whatsapp_message, address_city, address_street, instagram_url, facebook_url, hero_image_url, promo_video_url, google_tag_id, hero_video_url, hero_badge, hero_title, hero_description"
     )
     .eq("id", 1)
     .maybeSingle<SiteSettingsRow>();
@@ -70,6 +82,10 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
     heroImageUrl: data.hero_image_url || null,
     promoVideoUrl: data.promo_video_url || null,
     googleTagId: data.google_tag_id || null,
+    heroVideoUrl: data.hero_video_url || null,
+    heroBadge: data.hero_badge || defaultSiteSettings.heroBadge,
+    heroTitle: data.hero_title || defaultSiteSettings.heroTitle,
+    heroDescription: data.hero_description || defaultSiteSettings.heroDescription,
   };
 }
 

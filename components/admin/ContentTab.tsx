@@ -15,6 +15,10 @@ type SettingsForm = {
   hero_image_url: string | null;
   promo_video_url: string | null;
   google_tag_id: string | null;
+  hero_video_url: string | null;
+  hero_badge: string | null;
+  hero_title: string | null;
+  hero_description: string | null;
 };
 
 const EMPTY: SettingsForm = {
@@ -28,12 +32,31 @@ const EMPTY: SettingsForm = {
   hero_image_url: null,
   promo_video_url: null,
   google_tag_id: null,
+  hero_video_url: null,
+  hero_badge: null,
+  hero_title: null,
+  hero_description: null,
 };
+
+// The public storage bucket admin uploads (hero video, etc.) live in.
+const MEDIA_BUCKET = "site-media";
+
+// Extracts the storage path from a public Supabase Storage URL, e.g.
+// "https://xxx.supabase.co/storage/v1/object/public/site-media/hero/foo.mp4"
+// -> "hero/foo.mp4". Returns null if the URL doesn't look like ours (so we
+// never try to delete a file we didn't upload).
+function extractStoragePath(url: string): string | null {
+  const marker = `/object/public/${MEDIA_BUCKET}/`;
+  const idx = url.indexOf(marker);
+  if (idx === -1) return null;
+  return decodeURIComponent(url.slice(idx + marker.length));
+}
 
 export default function ContentTab() {
   const [form, setForm] = useState<SettingsForm>(EMPTY);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
   const [message, setMessage] = useState<{ type: "ok" | "error"; text: string } | null>(null);
 
   useEffect(() => {
@@ -50,6 +73,86 @@ export default function ContentTab() {
 
   function update<K extends keyof SettingsForm>(key: K, value: SettingsForm[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  // Uploads a new hero video, deletes the previous one from storage (so old
+  // files never pile up), and saves the new URL to site_settings right
+  // away — no need to also click "Kaydet" for the video specifically.
+  async function handleVideoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+
+    setUploadingVideo(true);
+    setMessage(null);
+
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const path = `hero/${Date.now()}-${safeName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from(MEDIA_BUCKET)
+      .upload(path, file, { upsert: false, contentType: file.type || "video/mp4" });
+
+    if (uploadError) {
+      setUploadingVideo(false);
+      setMessage({ type: "error", text: "Video yüklenemedi: " + uploadError.message });
+      return;
+    }
+
+    const { data: publicUrlData } = supabase.storage.from(MEDIA_BUCKET).getPublicUrl(path);
+    const newUrl = publicUrlData.publicUrl;
+    const previousUrl = form.hero_video_url;
+
+    const { error: saveError } = await supabase
+      .from("site_settings")
+      .update({ hero_video_url: newUrl, updated_at: new Date().toISOString() })
+      .eq("id", 1);
+
+    if (saveError) {
+      setUploadingVideo(false);
+      setMessage({ type: "error", text: "Video kaydedilemedi: " + saveError.message });
+      return;
+    }
+
+    // Old video is now fully replaced on the site — remove it from storage
+    // so it doesn't keep taking up space.
+    if (previousUrl) {
+      const previousPath = extractStoragePath(previousUrl);
+      if (previousPath) {
+        await supabase.storage.from(MEDIA_BUCKET).remove([previousPath]);
+      }
+    }
+
+    setForm((f) => ({ ...f, hero_video_url: newUrl }));
+    setUploadingVideo(false);
+    setMessage({ type: "ok", text: "Yeni video yüklendi ve eski video silindi. Site birkaç saniye içinde güncellenir." });
+  }
+
+  async function handleVideoRemove() {
+    const previousUrl = form.hero_video_url;
+    if (!previousUrl) return;
+    setUploadingVideo(true);
+    setMessage(null);
+
+    const { error: saveError } = await supabase
+      .from("site_settings")
+      .update({ hero_video_url: null, updated_at: new Date().toISOString() })
+      .eq("id", 1);
+
+    if (saveError) {
+      setUploadingVideo(false);
+      setMessage({ type: "error", text: "Kaldırılamadı: " + saveError.message });
+      return;
+    }
+
+    const previousPath = extractStoragePath(previousUrl);
+    if (previousPath) {
+      await supabase.storage.from(MEDIA_BUCKET).remove([previousPath]);
+    }
+
+    setForm((f) => ({ ...f, hero_video_url: null }));
+    setUploadingVideo(false);
+    setMessage({ type: "ok", text: "Video kaldırıldı, sitede varsayılan video gösterilecek." });
   }
 
   async function handleSave(e: React.FormEvent) {
@@ -70,6 +173,9 @@ export default function ContentTab() {
         hero_image_url: form.hero_image_url,
         promo_video_url: form.promo_video_url || null,
         google_tag_id: form.google_tag_id || null,
+        hero_badge: form.hero_badge || null,
+        hero_title: form.hero_title || null,
+        hero_description: form.hero_description || null,
         updated_at: new Date().toISOString(),
       })
       .eq("id", 1);
@@ -145,6 +251,78 @@ export default function ContentTab() {
               value={form.whatsapp_message}
               onChange={(e) => update("whatsapp_message", e.target.value)}
               rows={2}
+              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            />
+          </Field>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-bold text-slate-900">Ana Sayfa Arka Plan Videosu</h2>
+        <p className="mt-1 text-sm text-slate-500">
+          Ana sayfada en üstte oynayan videodur. Yeni video yüklediğinizde eski video
+          otomatik olarak sunucudan tamamen silinir. Boş bırakılırsa site varsayılan
+          videoyu gösterir.
+        </p>
+        <div className="mt-4 space-y-3">
+          {form.hero_video_url && (
+            <video
+              src={form.hero_video_url}
+              controls
+              muted
+              className="aspect-video max-w-sm rounded-lg border border-slate-200 bg-black"
+            />
+          )}
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="inline-flex cursor-pointer items-center rounded-full bg-slate-800 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-900">
+              {uploadingVideo ? "Yükleniyor..." : form.hero_video_url ? "Videoyu Değiştir" : "Video Yükle"}
+              <input
+                type="file"
+                accept="video/*"
+                onChange={handleVideoUpload}
+                disabled={uploadingVideo}
+                className="hidden"
+              />
+            </label>
+            {form.hero_video_url && (
+              <button
+                type="button"
+                onClick={handleVideoRemove}
+                disabled={uploadingVideo}
+                className="text-sm font-semibold text-red-600 hover:text-red-700 disabled:opacity-60"
+              >
+                Videoyu Kaldır (Varsayılana Dön)
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-bold text-slate-900">Ana Sayfa Video Üzerindeki Yazılar</h2>
+        <p className="mt-1 text-sm text-slate-500">
+          Videonun ortasında görünen rozet, başlık ve açıklama metnidir.
+        </p>
+        <div className="mt-4 space-y-3">
+          <Field label="Rozet (küçük etiket)">
+            <input
+              value={form.hero_badge ?? ""}
+              onChange={(e) => update("hero_badge", e.target.value)}
+              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            />
+          </Field>
+          <Field label="Ana başlık">
+            <input
+              value={form.hero_title ?? ""}
+              onChange={(e) => update("hero_title", e.target.value)}
+              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            />
+          </Field>
+          <Field label="Açıklama paragrafı">
+            <textarea
+              value={form.hero_description ?? ""}
+              onChange={(e) => update("hero_description", e.target.value)}
+              rows={3}
               className="w-full rounded-lg border border-slate-300 px-3 py-2"
             />
           </Field>

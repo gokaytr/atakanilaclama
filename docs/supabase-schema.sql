@@ -48,6 +48,10 @@ create table if not exists public.site_settings (
   hero_image_url text,
   promo_video_url text,
   google_tag_id text,
+  hero_video_url text,
+  hero_badge text,
+  hero_title text,
+  hero_description text,
   updated_at timestamptz not null default now()
 );
 
