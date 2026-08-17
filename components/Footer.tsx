@@ -34,10 +34,16 @@ export default function Footer() {
               ev, iş yeri ve kurumsal alanlara profesyonel böcek ilaçlama ve
               koltuk yıkama hizmeti sunuyoruz.
             </p>
-            <div className="mt-4 flex gap-3 text-sm">
-              <a href={settings.instagramUrl} className="text-slate-300 hover:text-white">Instagram</a>
-              <a href={settings.facebookUrl} className="text-slate-300 hover:text-white">Facebook</a>
-            </div>
+            {(settings.instagramUrl || settings.facebookUrl) && (
+              <div className="mt-4 flex gap-3 text-sm">
+                {settings.instagramUrl && (
+                  <a href={settings.instagramUrl} className="text-slate-300 hover:text-white">Instagram</a>
+                )}
+                {settings.facebookUrl && (
+                  <a href={settings.facebookUrl} className="text-slate-300 hover:text-white">Facebook</a>
+                )}
+              </div>
+            )}
           </div>
 
           <div>

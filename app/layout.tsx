@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import FloatingActionBar from "@/components/FloatingActionBar";
 import { SiteSettingsProvider } from "@/components/SiteSettingsProvider";
 import VisitorTracker from "@/components/VisitorTracker";
+import GoogleTag from "@/components/GoogleTag";
 import { siteConfig } from "@/data/site-config";
 import { buildLocalBusinessSchema, toJsonLd } from "@/lib/schema";
 
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: toJsonLd(buildLocalBusinessSchema()) }}
         />
         <SiteSettingsProvider>
+          <GoogleTag />
           <VisitorTracker />
           <Header />
           <main className="flex-1">{children}</main>

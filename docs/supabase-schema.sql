@@ -47,6 +47,7 @@ create table if not exists public.site_settings (
   facebook_url text not null default 'https://facebook.com/cevresaglik.ilaclama',
   hero_image_url text,
   promo_video_url text,
+  google_tag_id text,
   updated_at timestamptz not null default now()
 );
 

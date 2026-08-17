@@ -16,6 +16,7 @@ export type SiteSettings = {
   facebookUrl: string;
   heroImageUrl: string | null;
   promoVideoUrl: string | null;
+  googleTagId: string | null;
 };
 
 export const defaultSiteSettings: SiteSettings = {
@@ -28,6 +29,7 @@ export const defaultSiteSettings: SiteSettings = {
   facebookUrl: siteConfig.social.facebook,
   heroImageUrl: null,
   promoVideoUrl: null,
+  googleTagId: null,
 };
 
 type SiteSettingsRow = {
@@ -40,6 +42,7 @@ type SiteSettingsRow = {
   facebook_url: string;
   hero_image_url: string | null;
   promo_video_url: string | null;
+  google_tag_id: string | null;
 };
 
 // Fetches the live settings row. Returns the static defaults on any error
@@ -49,7 +52,7 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
   const { data, error } = await supabase
     .from("site_settings")
     .select(
-      "phone_display, phone_raw, whatsapp_message, address_city, address_street, instagram_url, facebook_url, hero_image_url, promo_video_url"
+      "phone_display, phone_raw, whatsapp_message, address_city, address_street, instagram_url, facebook_url, hero_image_url, promo_video_url, google_tag_id"
     )
     .eq("id", 1)
     .maybeSingle<SiteSettingsRow>();
@@ -62,10 +65,11 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
     whatsappMessage: data.whatsapp_message || defaultSiteSettings.whatsappMessage,
     addressCity: data.address_city || defaultSiteSettings.addressCity,
     addressStreet: data.address_street ?? defaultSiteSettings.addressStreet,
-    instagramUrl: data.instagram_url || defaultSiteSettings.instagramUrl,
-    facebookUrl: data.facebook_url || defaultSiteSettings.facebookUrl,
+    instagramUrl: data.instagram_url ?? defaultSiteSettings.instagramUrl,
+    facebookUrl: data.facebook_url ?? defaultSiteSettings.facebookUrl,
     heroImageUrl: data.hero_image_url || null,
     promoVideoUrl: data.promo_video_url || null,
+    googleTagId: data.google_tag_id || null,
   };
 }
 

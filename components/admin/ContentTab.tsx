@@ -14,6 +14,7 @@ type SettingsForm = {
   facebook_url: string;
   hero_image_url: string | null;
   promo_video_url: string | null;
+  google_tag_id: string | null;
 };
 
 const EMPTY: SettingsForm = {
@@ -26,6 +27,7 @@ const EMPTY: SettingsForm = {
   facebook_url: "",
   hero_image_url: null,
   promo_video_url: null,
+  google_tag_id: null,
 };
 
 export default function ContentTab() {
@@ -67,6 +69,7 @@ export default function ContentTab() {
         facebook_url: form.facebook_url,
         hero_image_url: form.hero_image_url,
         promo_video_url: form.promo_video_url || null,
+        google_tag_id: form.google_tag_id || null,
         updated_at: new Date().toISOString(),
       })
       .eq("id", 1);
@@ -119,17 +122,19 @@ export default function ContentTab() {
               className="w-full rounded-lg border border-slate-300 px-3 py-2"
             />
           </Field>
-          <Field label="Instagram linki">
+          <Field label="Instagram linki (boş bırakırsanız site genelinde gizlenir)">
             <input
               value={form.instagram_url}
               onChange={(e) => update("instagram_url", e.target.value)}
+              placeholder="https://instagram.com/..."
               className="w-full rounded-lg border border-slate-300 px-3 py-2"
             />
           </Field>
-          <Field label="Facebook linki">
+          <Field label="Facebook linki (boş bırakırsanız site genelinde gizlenir)">
             <input
               value={form.facebook_url}
               onChange={(e) => update("facebook_url", e.target.value)}
+              placeholder="https://facebook.com/..."
               className="w-full rounded-lg border border-slate-300 px-3 py-2"
             />
           </Field>
@@ -167,6 +172,24 @@ export default function ContentTab() {
               <iframe src={videoPreview} className="h-full w-full" allowFullScreen title="Video önizleme" />
             </div>
           )}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-bold text-slate-900">Google Ads</h2>
+        <p className="mt-1 text-sm text-slate-500">
+          Google Ads hesabınızdaki dönüşüm izleme (Tag) ID&apos;sini girin (ör. AW-1234567890).
+          Boş bırakırsanız siteye hiçbir Google Ads kodu eklenmez.
+        </p>
+        <div className="mt-4">
+          <Field label="Google Ads Tag ID">
+            <input
+              value={form.google_tag_id ?? ""}
+              onChange={(e) => update("google_tag_id", e.target.value || null)}
+              placeholder="AW-1234567890"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            />
+          </Field>
         </div>
       </section>
 

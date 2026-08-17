@@ -14,8 +14,8 @@ export const siteConfig = {
   // Admin email addresses that receive lead notifications.
   adminEmails: ["doganay9553@gmail.com", "gokayterzi@gmail.com"],
 
-  // Public-facing site domain (update once the domain is purchased/connected).
-  domain: "https://www.bocekilaclama.com.tr",
+  // Public-facing site domain.
+  domain: "https://cevresagligibocekilaclama.com",
 
   social: {
     instagram: "https://www.instagram.com/atakankoltuk_cevresagligi?igsi=ZGE2ZDdoM2E4enc3&utm_source=qr",
