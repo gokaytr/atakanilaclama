@@ -5,6 +5,7 @@ import Link from "next/link";
 import { siteConfig } from "@/data/site-config";
 import { districts } from "@/data/districts";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { buildGoogleMapsLinkFrom } from "@/lib/site-settings";
 
 export default function Footer() {
   // Show a handful of districts in the footer for internal linking (SEO)
@@ -71,10 +72,18 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white">İletişim</h4>
             <p className="mt-2 text-sm text-slate-300">{settings.phoneDisplay}</p>
-            <p className="text-sm text-slate-300">
-              {settings.addressStreet ? `${settings.addressStreet}, ` : ""}
-              {settings.addressCity}, Türkiye
-            </p>
+            {settings.addressStreet ? (
+              <a
+                href={buildGoogleMapsLinkFrom(settings)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 block text-sm text-slate-300 underline decoration-slate-600 hover:text-white"
+              >
+                📍 {settings.addressStreet}, {settings.addressCity}
+              </a>
+            ) : (
+              <p className="text-sm text-slate-300">{settings.addressCity}, Türkiye</p>
+            )}
             <p className="mt-3 text-xs text-slate-400">
               Sağlık Bakanlığı onaylı ürünler · İstanbul geneli hizmet
             </p>

@@ -15,7 +15,9 @@ export function buildLocalBusinessSchema() {
     priceRange: "₺₺",
     address: {
       "@type": "PostalAddress",
-      addressLocality: siteConfig.address.city,
+      streetAddress: siteConfig.address.street,
+      addressLocality: "Kağıthane",
+      addressRegion: "İstanbul",
       addressCountry: "TR",
     },
     areaServed: "İstanbul",

@@ -77,3 +77,9 @@ export function buildWhatsappLinkFrom(settings: SiteSettings, message?: string):
 export function buildTelLinkFrom(settings: SiteSettings): string {
   return `tel:+${settings.phoneRaw}`;
 }
+
+// Opens a Google Maps search for the business address.
+export function buildGoogleMapsLinkFrom(settings: SiteSettings): string {
+  const query = `${settings.addressStreet}, ${settings.addressCity}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}

@@ -18,14 +18,13 @@ export const siteConfig = {
   domain: "https://www.bocekilaclama.com.tr",
 
   social: {
-    instagram: "https://instagram.com/cevresaglik.ilaclama",
+    instagram: "https://www.instagram.com/atakankoltuk_cevresagligi?igsi=ZGE2ZDdoM2E4enc3&utm_source=qr",
     facebook: "https://facebook.com/cevresaglik.ilaclama",
   },
 
   address: {
-    city: "İstanbul",
-    // Fill in exact street address once confirmed with the business owner.
-    street: "",
+    city: "Kağıthane, İstanbul",
+    street: "Hamidiye Mahallesi Sürmene Sokak No:2 D:8",
   },
 
   // Default WhatsApp message shown when a visitor taps the floating button.
@@ -41,4 +40,11 @@ export function buildWhatsappLink(message?: string): string {
 
 export function buildTelLink(): string {
   return `tel:+${siteConfig.phoneRaw}`;
+}
+
+// Opens a Google Maps search for the business address — works as a "find
+// us on Google Maps" link without needing a fixed place/CID id.
+export function buildGoogleMapsLink(): string {
+  const query = `${siteConfig.address.street}, ${siteConfig.address.city}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
