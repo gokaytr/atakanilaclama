@@ -59,6 +59,7 @@ type Stats = {
   mobileVisitors: number;
   sourceCounts: { source: string; count: number }[];
   exitPages: { path: string; count: number }[];
+  blogViews: { path: string; count: number }[];
   whatsappClicks: number;
   phoneClicks: number;
   adsLeads: number;
@@ -135,7 +136,19 @@ export default function DashboardTab() {
         const exitPages = [...exitMap.entries()]
           .map(([path, count]) => ({ path, count }))
           .sort((a, b) => b.count - a.count)
-          .slice(0, 5);
+          .slice(0, 30);
+
+        // Every raw pageview (not just exits) on a /blog/... article, so we
+        // can show how many times each article was actually opened.
+        const blogMap = new Map<string, number>();
+        for (const row of rows) {
+          if (row.page_path.startsWith("/blog/")) {
+            blogMap.set(row.page_path, (blogMap.get(row.page_path) ?? 0) + 1);
+          }
+        }
+        const blogViews = [...blogMap.entries()]
+          .map(([path, count]) => ({ path, count }))
+          .sort((a, b) => b.count - a.count);
 
         const clicks = clicksRes.data ?? [];
         const whatsappClicks = clicks.filter((c: { event_type: string }) => c.event_type === "whatsapp").length;
@@ -149,6 +162,7 @@ export default function DashboardTab() {
           mobileVisitors,
           sourceCounts,
           exitPages,
+          blogViews,
           whatsappClicks,
           phoneClicks,
           adsLeads: leadsRes.count ?? 0,
@@ -260,13 +274,36 @@ export default function DashboardTab() {
           </div>
 
           <h2 className="mb-3 mt-8 text-sm font-semibold uppercase tracking-wide text-slate-500">
-            Ziyaretçilerin Sitede En Son Baktığı Sayfalar
+            Blog Yazısı Görüntülenmeleri
           </h2>
           <p className="mb-3 text-xs text-slate-400">
-            Bu liste, ziyaretçinin seçili dönemde sitenizde <strong>en son görüntülediği sayfayı</strong> gösterir —
-            yani muhtemelen o sayfadan sonra siteden ayrılmıştır. Neden ayrıldığını (fiyat, ilgisizlik, teknik
-            sorun vb.) bu veriden kesin olarak bilemeyiz; yalnızca nerede durduklarını gösterir.
+            Her makale sayfasının seçili dönemde kaç kez açıldığı.
           </p>
+          {stats.blogViews.length === 0 ? (
+            <p className="text-sm text-slate-400">Seçilen dönemde blog görüntülemesi yok.</p>
+          ) : (
+            <div className="space-y-2">
+              {stats.blogViews.map((p) => (
+                <div key={p.path} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4">
+                  <span className="truncate text-sm text-slate-700">{p.path.replace("/blog/", "")}</span>
+                  <span className="font-bold text-slate-900">{p.count.toLocaleString("tr-TR")}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <h2 className="mb-3 mt-8 text-sm font-semibold uppercase tracking-wide text-slate-500">
+            Ziyaretçilerin Sitede En Son Baktığı Sayfalar (ilk 30)
+          </h2>
+          <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs leading-relaxed text-amber-900">
+            <strong>Ziyaretçilerin neden ayrıldığını (sitede karar veremedi mi, fiyatı mı yüksek buldu, teknik bir
+            sorun mu yaşadı vb.) gösteren bir veri yoktur ve olamaz</strong> — hiçbir web sitesi analiz sistemi
+            (Google Analytics dahil) bir ziyaretçinin aklından geçeni ölçemez, çünkü bu bilgi tarayıcıda hiçbir
+            şekilde kaydedilmez. Elimizde olan, aşağıdaki liste: ziyaretçinin seçili dönemde{" "}
+            <strong>en son görüntülediği sayfa</strong>. Bu, &quot;neden&quot;in değil yalnızca &quot;nerede
+            durdu&quot;nun dürüst bir göstergesidir — yorumu size aittir (ör. aynı sayfada çok sayıda kişi
+            duruyorsa, o sayfanın gözden geçirilmesi faydalı olabilir).
+          </div>
           {stats.exitPages.length === 0 ? (
             <p className="text-sm text-slate-400">Veri yok.</p>
           ) : (
