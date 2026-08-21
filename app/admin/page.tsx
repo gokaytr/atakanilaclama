@@ -36,9 +36,9 @@ export default function AdminDashboardPage() {
   const currentLabel = NAV_ITEMS.find((item) => item.key === tab)?.label ?? "";
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
-      {/* Sidebar — desktop */}
-      <aside className="hidden w-64 shrink-0 flex-col bg-slate-900 text-slate-200 md:flex">
+    <div className="flex h-screen overflow-hidden bg-slate-100">
+      {/* Sidebar — desktop, fixed full-height, never scrolls with content */}
+      <aside className="hidden h-full w-64 shrink-0 flex-col bg-slate-900 text-slate-200 md:flex">
         <SidebarContent
           email={session.user.email ?? ""}
           tab={tab}
@@ -47,9 +47,9 @@ export default function AdminDashboardPage() {
         />
       </aside>
 
-      <div className="flex min-h-screen flex-1 flex-col">
-        {/* Top bar — mobile only */}
-        <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 md:hidden">
+      <div className="flex h-full flex-1 flex-col overflow-hidden">
+        {/* Top bar — mobile only, fixed */}
+        <header className="flex shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 py-3 md:hidden">
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
@@ -96,7 +96,8 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        <main className="flex-1 px-4 py-8 md:px-10">
+        {/* Only this area scrolls — sidebar and mobile header stay put */}
+        <main className="flex-1 overflow-y-auto px-4 py-8 md:px-10">
           <div className="mx-auto max-w-6xl">
             {tab === "dashboard" && <DashboardTab />}
             {tab === "leads" && <LeadsTab />}
@@ -131,7 +132,7 @@ function SidebarContent({
           <p className="mt-1 truncate text-xs text-slate-400">{email}</p>
         </div>
       )}
-      <nav className="flex-1 space-y-1 px-3">
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3">
         {NAV_ITEMS.map((item) => (
           <button
             key={item.key}

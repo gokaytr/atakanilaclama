@@ -70,7 +70,7 @@ export default async function ArticlePage({
 
       <div className="mt-8 space-y-4 text-slate-700 leading-relaxed">
         {paragraphs.map((p, i) => (
-          <p key={i}>{p}</p>
+          <p key={i} className="whitespace-pre-line">{p}</p>
         ))}
       </div>
 
