@@ -77,6 +77,34 @@ export function buildFaqSchema(items: { question: string; answer: string }[]) {
   };
 }
 
+export function buildArticleSchema(params: {
+  title: string;
+  description: string;
+  slug: string;
+  datePublished: string;
+  dateModified: string;
+  imageUrl?: string | null;
+}) {
+  const { title, description, slug, datePublished, dateModified, imageUrl } = params;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    url: `${siteConfig.domain}/blog/${slug}`,
+    datePublished,
+    dateModified,
+    image: imageUrl || `${siteConfig.domain}/logo.jpg`,
+    author: { "@type": "Organization", name: siteConfig.companyName },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.companyName,
+      logo: { "@type": "ImageObject", url: `${siteConfig.domain}/logo.jpg` },
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${siteConfig.domain}/blog/${slug}` },
+  };
+}
+
 // Small component-friendly wrapper: pass this string into a <script> tag.
 export function toJsonLd(schema: object): string {
   return JSON.stringify(schema);

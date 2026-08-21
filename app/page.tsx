@@ -1,13 +1,20 @@
 import Link from "next/link";
 import { buildWhatsappLink } from "@/data/site-config";
-import { services, cleaningServices, pricingByPlace } from "@/data/services";
+import { services, cleaningServices } from "@/data/services";
 import { districts } from "@/data/districts";
 import { getNeighborhoodsByDistrict } from "@/data/neighborhoods";
 import { buildFaqSchema, toJsonLd } from "@/lib/schema";
+import { fetchPricingItems } from "@/lib/pricing";
+import { fetchPublishedArticles } from "@/lib/articles";
 import PestMarquee from "@/components/PestMarquee";
 import VideoHero from "@/components/VideoHero";
 import PromoVideoSection from "@/components/PromoVideoSection";
 import FinalCtaButtons from "@/components/FinalCtaButtons";
+
+// Price list and featured articles are admin-editable in Supabase, so the
+// homepage is revalidated periodically (ISR) instead of only at build
+// time — price/article changes show up without needing a redeploy.
+export const revalidate = 3600;
 
 const TRUST_BADGES = [
   { icon: "📍", label: "İstanbul Geneli Hizmet" },
@@ -57,10 +64,14 @@ const FAQ_ITEMS = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
   const anadolu = districts.filter((d) => d.side === "anadolu");
   const avrupa = districts.filter((d) => d.side === "avrupa");
   const faqSchema = buildFaqSchema(FAQ_ITEMS);
+  const [pricingByPlace, articles] = await Promise.all([
+    fetchPricingItems(),
+    fetchPublishedArticles(4),
+  ]);
 
   return (
     <div>
@@ -106,7 +117,7 @@ export default function HomePage() {
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {pricingByPlace.map((p) => (
               <div
-                key={p.name}
+                key={p.id}
                 className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4"
               >
                 <div className="flex items-center gap-3">
@@ -325,6 +336,38 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Faydalı Bilgiler — admin-authored SEO articles, latest 4 */}
+      {articles.length > 0 && (
+        <section className="w-full bg-white">
+          <div className="mx-auto max-w-7xl px-4 py-14">
+            <h2 className="text-2xl font-extrabold text-slate-900">Faydalı Bilgiler</h2>
+            <p className="mt-2 max-w-2xl text-slate-600">
+              Böcek ilaçlama ve koltuk yıkama hakkında uzman tavsiyeleri.
+            </p>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+              {articles.map((article) => (
+                <Link
+                  key={article.slug}
+                  href={`/blog/${article.slug}`}
+                  className="rounded-2xl border border-slate-200 p-5 transition hover:border-emerald-300 hover:shadow-md"
+                >
+                  <h3 className="font-bold text-slate-900">{article.title}</h3>
+                  <p className="mt-2 text-sm text-slate-600">{article.excerpt}</p>
+                  <span className="mt-3 inline-block text-sm font-semibold text-emerald-700">
+                    Devamını oku →
+                  </span>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-6 text-center">
+              <Link href="/blog" className="text-sm font-semibold text-emerald-700 underline">
+                Tüm yazıları gör →
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* FAQ */}
       <section className="w-full bg-slate-50">

@@ -151,6 +151,91 @@ create policy "Admins can delete site media"
   );
 
 -- ---------------------------------------------------------------------
+-- articles — admin-authored SEO blog posts, shown at /blog and /blog/[slug]
+-- and featured on the homepage. Public can only read published ones.
+-- ---------------------------------------------------------------------
+create table if not exists public.articles (
+  id uuid primary key default gen_random_uuid(),
+  slug text unique not null,
+  title text not null,
+  excerpt text not null default '',
+  content text not null default '',
+  cover_image_url text,
+  seo_title text,
+  seo_description text,
+  published boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists articles_published_idx on public.articles (published, created_at desc);
+
+alter table public.articles enable row level security;
+
+create policy "Anyone can read published articles"
+  on public.articles for select
+  to anon, authenticated
+  using (published = true);
+
+create policy "Admins can read all articles"
+  on public.articles for select
+  to authenticated
+  using ((auth.jwt() ->> 'email') in ('doganay9553@gmail.com', 'gokayterzi@gmail.com'));
+
+create policy "Admins can insert articles"
+  on public.articles for insert
+  to authenticated
+  with check ((auth.jwt() ->> 'email') in ('doganay9553@gmail.com', 'gokayterzi@gmail.com'));
+
+create policy "Admins can update articles"
+  on public.articles for update
+  to authenticated
+  using ((auth.jwt() ->> 'email') in ('doganay9553@gmail.com', 'gokayterzi@gmail.com'))
+  with check ((auth.jwt() ->> 'email') in ('doganay9553@gmail.com', 'gokayterzi@gmail.com'));
+
+create policy "Admins can delete articles"
+  on public.articles for delete
+  to authenticated
+  using ((auth.jwt() ->> 'email') in ('doganay9553@gmail.com', 'gokayterzi@gmail.com'));
+
+-- ---------------------------------------------------------------------
+-- pricing_items — admin-editable "starting from" price list shown on the
+-- homepage. Replaces the static pricingByPlace array in data/services.ts.
+-- ---------------------------------------------------------------------
+create table if not exists public.pricing_items (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  icon text not null default '💰',
+  price_from integer not null,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.pricing_items enable row level security;
+
+create policy "Anyone can read pricing"
+  on public.pricing_items for select
+  to anon, authenticated
+  using (true);
+
+create policy "Admins can insert pricing"
+  on public.pricing_items for insert
+  to authenticated
+  with check ((auth.jwt() ->> 'email') in ('doganay9553@gmail.com', 'gokayterzi@gmail.com'));
+
+create policy "Admins can update pricing"
+  on public.pricing_items for update
+  to authenticated
+  using ((auth.jwt() ->> 'email') in ('doganay9553@gmail.com', 'gokayterzi@gmail.com'))
+  with check ((auth.jwt() ->> 'email') in ('doganay9553@gmail.com', 'gokayterzi@gmail.com'));
+
+create policy "Admins can delete pricing"
+  on public.pricing_items for delete
+  to authenticated
+  using ((auth.jwt() ->> 'email') in ('doganay9553@gmail.com', 'gokayterzi@gmail.com'));
+
+-- ---------------------------------------------------------------------
 -- click_events — logs WhatsApp/phone CTA clicks (first-party, no
 -- cookies), tagged is_ads=true when the visitor arrived via a Google Ads
 -- click (gclid param, or utm_medium=cpc / utm_source=google). Powers the

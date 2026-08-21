@@ -8,11 +8,15 @@ import DashboardTab from "@/components/admin/DashboardTab";
 import LeadsTab from "@/components/admin/LeadsTab";
 import ContentTab from "@/components/admin/ContentTab";
 import StatsTab from "@/components/admin/StatsTab";
+import SeoTab from "@/components/admin/SeoTab";
+import PricingTab from "@/components/admin/PricingTab";
 
 const NAV_ITEMS = [
   { key: "dashboard", label: "Özet", icon: "📊" },
   { key: "leads", label: "Talepler", icon: "📨" },
   { key: "content", label: "İçerik", icon: "🎬" },
+  { key: "seo", label: "SEO", icon: "📝" },
+  { key: "pricing", label: "Fiyatlar", icon: "💰" },
   { key: "stats", label: "Ziyaretçi İstatistikleri", icon: "📈" },
 ] as const;
 
@@ -99,6 +103,8 @@ export default function AdminDashboardPage() {
             {tab === "dashboard" && <DashboardTab />}
             {tab === "leads" && <LeadsTab />}
             {tab === "content" && <ContentTab />}
+            {tab === "seo" && <SeoTab />}
+            {tab === "pricing" && <PricingTab />}
             {tab === "stats" && <StatsTab />}
           </div>
         </main>

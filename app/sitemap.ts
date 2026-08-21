@@ -3,6 +3,7 @@ import { siteConfig } from "@/data/site-config";
 import { districts } from "@/data/districts";
 import { neighborhoods } from "@/data/neighborhoods";
 import { services, cleaningServices } from "@/data/services";
+import { fetchPublishedArticles } from "@/lib/articles";
 
 const PEST_SUFFIX = "-bocek-ilaclama";
 const CLEANING_SUFFIX = "-koltuk-yikama";
@@ -13,10 +14,16 @@ const MAHALLESI = "-mahallesi";
 // files is enough to get it indexed by Google (submit the sitemap URL in
 // Search Console once). Total URL count stays well under the 50,000 cap
 // for a single sitemap, so no sitemap index is needed.
-export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPages = ["", "/hizmetler", "/bolgeler", "/hakkimizda", "/iletisim"].map((path) => ({
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticPages = ["", "/hizmetler", "/bolgeler", "/hakkimizda", "/iletisim", "/blog"].map((path) => ({
     url: `${siteConfig.domain}${path}`,
     lastModified: new Date(),
+  }));
+
+  const articles = await fetchPublishedArticles();
+  const articlePages = articles.map((a) => ({
+    url: `${siteConfig.domain}/blog/${a.slug}`,
+    lastModified: new Date(a.updatedAt),
   }));
 
   const districtPages = districts.flatMap((d) => [
@@ -40,5 +47,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
   }));
 
-  return [...staticPages, ...districtPages, ...neighborhoodPages, ...servicePages];
+  return [...staticPages, ...districtPages, ...neighborhoodPages, ...servicePages, ...articlePages];
 }

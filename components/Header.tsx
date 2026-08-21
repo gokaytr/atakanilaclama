@@ -15,6 +15,7 @@ const NAV_LINKS = [
   { href: "/hizmetler/koltuk-yikama", label: "Koltuk Yıkama" },
   { href: "/bolgeler", label: "Hizmet Bölgeleri" },
   { href: "/#fiyatlar", label: "Fiyat Listesi" },
+  { href: "/blog", label: "Faydalı Bilgiler" },
   { href: "/hakkimizda", label: "Hakkımızda" },
   { href: "/iletisim", label: "İletişim" },
 ];
