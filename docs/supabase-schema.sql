@@ -82,7 +82,9 @@ create table if not exists public.page_views (
   created_at timestamptz not null default now(),
   visitor_id text not null,
   page_path text not null,
-  is_ads boolean not null default false
+  is_ads boolean not null default false,
+  device text,
+  referrer_source text
 );
 
 create index if not exists page_views_visitor_id_idx on public.page_views (visitor_id);

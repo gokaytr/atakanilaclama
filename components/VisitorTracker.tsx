@@ -36,6 +36,37 @@ function isAdsVisit(): boolean {
   }
 }
 
+// Simple, standard mobile-UA sniffing — good enough to split "masaüstü" vs
+// "mobil" for the admin dashboard without any external library.
+function detectDevice(): "mobile" | "desktop" {
+  try {
+    return /Mobi|Android|iPhone|iPad/i.test(window.navigator.userAgent) ? "mobile" : "desktop";
+  } catch {
+    return "desktop";
+  }
+}
+
+// Buckets document.referrer into a small set of recognizable sources.
+// "direct" covers both a truly empty referrer and same-site navigation
+// (clicking between our own pages shouldn't count as a new "source").
+function detectReferrerSource(): string {
+  try {
+    const ref = document.referrer;
+    if (!ref) return "direct";
+    const host = new URL(ref).hostname.replace(/^www\./, "");
+    if (host === window.location.hostname) return "direct";
+    if (host.includes("google.")) return "google";
+    if (host.includes("instagram.")) return "instagram";
+    if (host.includes("facebook.") || host.includes("fb.com")) return "facebook";
+    if (host.includes("whatsapp.")) return "whatsapp";
+    if (host.includes("yandex.")) return "yandex";
+    if (host.includes("bing.")) return "bing";
+    return "other";
+  } catch {
+    return "direct";
+  }
+}
+
 export default function VisitorTracker() {
   const pathname = usePathname();
 
@@ -46,7 +77,13 @@ export default function VisitorTracker() {
     const visitorId = getOrCreateVisitorId();
     supabase
       .from("page_views")
-      .insert({ visitor_id: visitorId, page_path: pathname, is_ads: isAdsVisit() })
+      .insert({
+        visitor_id: visitorId,
+        page_path: pathname,
+        is_ads: isAdsVisit(),
+        device: detectDevice(),
+        referrer_source: detectReferrerSource(),
+      })
       .then(({ error }) => {
         if (error) console.warn("[visitor-tracker] insert failed:", error.message);
       });

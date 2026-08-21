@@ -54,7 +54,15 @@ const EMPTY_FORM = {
   published: true,
 };
 
+const SUB_TABS = [
+  { key: "new", label: "Yeni Makale" },
+  { key: "list", label: "Makaleler" },
+] as const;
+
+type SubTab = (typeof SUB_TABS)[number]["key"];
+
 export default function SeoTab() {
+  const [subTab, setSubTab] = useState<SubTab>("new");
   const [articles, setArticles] = useState<ArticleRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -99,6 +107,7 @@ export default function SeoTab() {
     });
     setSlugTouched(true);
     setMessage(null);
+    setSubTab("new");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -190,7 +199,33 @@ export default function SeoTab() {
         /blog sayfasında yayınlanır.
       </p>
 
-      <form onSubmit={handleSave} className="mt-6 max-w-2xl space-y-3 rounded-2xl border border-slate-200 p-5">
+      <div className="mt-4 flex gap-1 rounded-full border border-slate-200 bg-white p-1 w-fit">
+        {SUB_TABS.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            onClick={() => setSubTab(t.key)}
+            className={`rounded-full px-4 py-1.5 text-sm font-semibold transition ${
+              subTab === t.key ? "bg-emerald-700 text-white" : "text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            {t.label}
+            {t.key === "list" && articles.length > 0 && (
+              <span className="ml-1.5 text-xs opacity-75">({articles.length})</span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {subTab === "new" && (
+      <>
+      <div className="mt-6 max-w-2xl rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+        💡 Düzenli olarak <strong>haftada 2 makale</strong> eklemeniz, sitenizin arama motorlarında
+        (Google) daha üst sıralarda çıkmasına yardımcı olur — arama motorları düzenli ve güncel
+        içerik üreten siteleri daha sık tarar ve daha güvenilir bulur.
+      </div>
+
+      <form onSubmit={handleSave} className="mt-4 max-w-2xl space-y-3 rounded-2xl border border-slate-200 p-5">
         <h2 className="font-bold text-slate-900">{form.id ? "Yazıyı Düzenle" : "Yeni Yazı Ekle"}</h2>
 
         <Field label="Başlık">
@@ -294,35 +329,41 @@ export default function SeoTab() {
           )}
         </div>
       </form>
+      </>
+      )}
 
-      <h2 className="mb-3 mt-10 text-lg font-bold text-slate-900">Tüm Yazılar</h2>
-      {loading ? (
-        <p className="text-slate-500">Yükleniyor...</p>
-      ) : articles.length === 0 ? (
-        <p className="text-slate-500">Henüz yazı yok.</p>
-      ) : (
-        <div className="space-y-2">
-          {articles.map((article) => (
-            <div key={article.id} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 p-4">
-              <div>
-                <p className="font-semibold text-slate-900">
-                  {article.title}{" "}
-                  {!article.published && (
-                    <span className="ml-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500">Taslak</span>
-                  )}
-                </p>
-                <p className="text-xs text-slate-400">/blog/{article.slug}</p>
-              </div>
-              <div className="flex shrink-0 gap-3">
-                <button onClick={() => startEdit(article)} className="text-sm font-semibold text-emerald-700 hover:text-emerald-800">
-                  Düzenle
-                </button>
-                <button onClick={() => handleDelete(article)} className="text-sm font-semibold text-red-600 hover:text-red-700">
-                  Sil
-                </button>
-              </div>
+      {subTab === "list" && (
+        <div className="mt-6">
+          <h2 className="mb-3 text-lg font-bold text-slate-900">Tüm Yazılar</h2>
+          {loading ? (
+            <p className="text-slate-500">Yükleniyor...</p>
+          ) : articles.length === 0 ? (
+            <p className="text-slate-500">Henüz yazı yok.</p>
+          ) : (
+            <div className="space-y-2">
+              {articles.map((article) => (
+                <div key={article.id} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 p-4">
+                  <div>
+                    <p className="font-semibold text-slate-900">
+                      {article.title}{" "}
+                      {!article.published && (
+                        <span className="ml-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500">Taslak</span>
+                      )}
+                    </p>
+                    <p className="text-xs text-slate-400">/blog/{article.slug}</p>
+                  </div>
+                  <div className="flex shrink-0 gap-3">
+                    <button onClick={() => startEdit(article)} className="text-sm font-semibold text-emerald-700 hover:text-emerald-800">
+                      Düzenle
+                    </button>
+                    <button onClick={() => handleDelete(article)} className="text-sm font-semibold text-red-600 hover:text-red-700">
+                      Sil
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       )}
     </div>
