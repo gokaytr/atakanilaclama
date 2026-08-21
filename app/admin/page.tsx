@@ -7,7 +7,6 @@ import { supabase } from "@/lib/supabase";
 import DashboardTab from "@/components/admin/DashboardTab";
 import LeadsTab from "@/components/admin/LeadsTab";
 import ContentTab from "@/components/admin/ContentTab";
-import StatsTab from "@/components/admin/StatsTab";
 import SeoTab from "@/components/admin/SeoTab";
 import PricingTab from "@/components/admin/PricingTab";
 
@@ -17,7 +16,6 @@ const NAV_ITEMS = [
   { key: "content", label: "İçerik", icon: "🎬" },
   { key: "seo", label: "SEO", icon: "📝" },
   { key: "pricing", label: "Fiyatlar", icon: "💰" },
-  { key: "stats", label: "Ziyaretçi İstatistikleri", icon: "📈" },
 ] as const;
 
 type TabKey = (typeof NAV_ITEMS)[number]["key"];
@@ -105,7 +103,6 @@ export default function AdminDashboardPage() {
             {tab === "content" && <ContentTab />}
             {tab === "seo" && <SeoTab />}
             {tab === "pricing" && <PricingTab />}
-            {tab === "stats" && <StatsTab />}
           </div>
         </main>
       </div>

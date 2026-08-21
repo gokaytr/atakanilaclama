@@ -1,100 +1,178 @@
 "use client";
 
-// First screen the admin sees. Answers the two questions that matter most
-// day-to-day: "are people clicking WhatsApp/telefon?" and "is the Google
-// Ads spend bringing anyone in?" — both powered by first-party tracking
-// (lib/click-tracking.ts + VisitorTracker's is_ads flag), no cookies, no
-// third-party scripts.
+// Single combined overview tab (replaces the old separate Özet + Ziyaretçi
+// İstatistikleri tabs). Everything here is computed for a selected period
+// (Bugün / Bu Ay / Bu Yıl) directly from the raw page_views and
+// click_events tables — no fixed 30/7-day views — so the numbers always
+// match the period the admin picked.
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-type ClickStats = {
-  whatsapp_clicks: number;
-  phone_clicks: number;
-  ads_clicks: number;
-  whatsapp_clicks_30d: number;
-  phone_clicks_30d: number;
-  ads_clicks_30d: number;
+type Period = "day" | "month" | "year";
+
+const PERIOD_LABELS: Record<Period, string> = {
+  day: "Bugün",
+  month: "Bu Ay",
+  year: "Bu Yıl",
 };
 
-type AdsVisitStats = {
-  ads_pageviews: number;
-  ads_unique_visitors: number;
-  ads_pageviews_30d: number;
-  ads_unique_visitors_30d: number;
+function periodStart(period: Period): Date {
+  const now = new Date();
+  if (period === "day") return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (period === "month") return new Date(now.getFullYear(), now.getMonth(), 1);
+  return new Date(now.getFullYear(), 0, 1);
+}
+
+type Stats = {
+  uniqueVisitors: number;
+  organicVisitors: number;
+  adsVisitors: number;
+  whatsappClicks: number;
+  phoneClicks: number;
+  adsLeads: number;
 };
 
 export default function DashboardTab() {
-  const [clicks, setClicks] = useState<ClickStats | null>(null);
-  const [adsVisits, setAdsVisits] = useState<AdsVisitStats | null>(null);
-  const [adsLeads, setAdsLeads] = useState<number | null>(null);
+  const [period, setPeriod] = useState<Period>("month");
+  const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      supabase.from("click_stats").select("*").maybeSingle<ClickStats>(),
-      supabase.from("ads_visit_stats").select("*").maybeSingle<AdsVisitStats>(),
-      supabase.from("leads").select("id", { count: "exact", head: true }).or("source.eq.google_ads,medium.eq.cpc"),
-    ]).then(([clickRes, adsVisitRes, leadsRes]) => {
-      setClicks(clickRes.data);
-      setAdsVisits(adsVisitRes.data);
-      setAdsLeads(leadsRes.count ?? 0);
-      setLoading(false);
-    });
-  }, []);
+    const state = { cancelled: false };
 
-  if (loading) return <p className="text-slate-500">Yükleniyor...</p>;
+    function load() {
+      setLoading(true);
+      const startIso = periodStart(period).toISOString();
 
-  const hasAnyData = (clicks && (clicks.whatsapp_clicks > 0 || clicks.phone_clicks > 0)) || (adsVisits && adsVisits.ads_pageviews > 0);
+      Promise.all([
+        supabase.from("page_views").select("visitor_id, is_ads").gte("created_at", startIso),
+        supabase.from("click_events").select("event_type").gte("created_at", startIso),
+        supabase
+          .from("leads")
+          .select("id", { count: "exact", head: true })
+          .gte("created_at", startIso)
+          .or("source.eq.google_ads,medium.eq.cpc"),
+      ]).then(([pageViewsRes, clicksRes, leadsRes]) => {
+        if (state.cancelled) return;
+
+        const visitorAdsMap = new Map<string, boolean>();
+        (pageViewsRes.data ?? []).forEach((row: { visitor_id: string; is_ads: boolean }) => {
+          const prev = visitorAdsMap.get(row.visitor_id) ?? false;
+          visitorAdsMap.set(row.visitor_id, prev || row.is_ads);
+        });
+        const uniqueVisitors = visitorAdsMap.size;
+        const adsVisitors = [...visitorAdsMap.values()].filter(Boolean).length;
+
+        const clicks = clicksRes.data ?? [];
+        const whatsappClicks = clicks.filter((c: { event_type: string }) => c.event_type === "whatsapp").length;
+        const phoneClicks = clicks.filter((c: { event_type: string }) => c.event_type === "phone").length;
+
+        setStats({
+          uniqueVisitors,
+          organicVisitors: uniqueVisitors - adsVisitors,
+          adsVisitors,
+          whatsappClicks,
+          phoneClicks,
+          adsLeads: leadsRes.count ?? 0,
+        });
+        setLoading(false);
+      });
+    }
+
+    const timer = setTimeout(load, 0);
+    return () => {
+      state.cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [period]);
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900">Özet</h1>
-      <p className="mt-1 text-sm text-slate-500">
-        Ziyaretçilerin en çok kullandığı iletişim yollarına ve Google reklamından gelen trafiğe genel bakış.
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Özet</h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Ziyaretçi ve tıklama rakamları, seçtiğiniz döneme göre.
+          </p>
+        </div>
 
-      {!hasAnyData && (
-        <p className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
-          Henüz tıklama verisi yok — WhatsApp veya telefon butonlarına tıklandıkça burada görünecek.
-        </p>
+        <div className="flex gap-1 rounded-full border border-slate-200 bg-white p-1">
+          {(Object.keys(PERIOD_LABELS) as Period[]).map((key) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setPeriod(key)}
+              className={`rounded-full px-4 py-1.5 text-sm font-semibold transition ${
+                period === key ? "bg-emerald-700 text-white" : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              {PERIOD_LABELS[key]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {loading || !stats ? (
+        <p className="mt-6 text-slate-500">Yükleniyor...</p>
+      ) : (
+        <>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <StatCard label="Tekil Ziyaretçi" value={stats.uniqueVisitors} accent="text-slate-900" icon="👤" big />
+          </div>
+
+          <h2 className="mb-3 mt-8 text-sm font-semibold uppercase tracking-wide text-slate-500">
+            Ziyaretçi Kaynağı
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <StatCard label="Organik Giriş" value={stats.organicVisitors} accent="text-emerald-700" icon="🌱" />
+            <StatCard label="Reklamla Giriş" value={stats.adsVisitors} accent="text-blue-700" icon="📣" />
+          </div>
+
+          <h2 className="mb-3 mt-8 text-sm font-semibold uppercase tracking-wide text-slate-500">Tıklamalar</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <StatCard label="WhatsApp Tıklama" value={stats.whatsappClicks} accent="text-emerald-700" icon="💬" />
+            <StatCard label="Telefon Tıklama" value={stats.phoneClicks} accent="text-slate-800" icon="☎️" />
+          </div>
+
+          <h2 className="mb-3 mt-8 text-sm font-semibold uppercase tracking-wide text-slate-500">
+            Google Reklam
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <StatCard label="Reklamdan Gelen Talep" value={stats.adsLeads} accent="text-blue-700" icon="📨" />
+          </div>
+
+          <p className="mt-6 text-xs text-slate-400">
+            Bir ziyaretçi, seçilen dönem içinde en az bir kez reklam linkinden (gclid veya cpc
+            etiketiyle) geldiyse &quot;Reklamla Giriş&quot; olarak sayılır — çerez kullanılmaz.
+            Detaylı talep listesi için &quot;Talepler&quot; sekmesine bakabilirsiniz.
+          </p>
+        </>
       )}
-
-      <h2 className="mb-3 mt-6 text-sm font-semibold uppercase tracking-wide text-slate-500">Tıklamalar — Tüm Zamanlar</h2>
-      <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="WhatsApp Tıklama" value={clicks?.whatsapp_clicks ?? 0} accent="text-emerald-700" icon="💬" />
-        <StatCard label="Telefon Tıklama" value={clicks?.phone_clicks ?? 0} accent="text-slate-800" icon="☎️" />
-        <StatCard label="Reklamdan Gelen Tıklama" value={clicks?.ads_clicks ?? 0} accent="text-blue-700" icon="📣" />
-      </div>
-
-      <h2 className="mb-3 mt-8 text-sm font-semibold uppercase tracking-wide text-slate-500">Son 30 Gün</h2>
-      <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="WhatsApp Tıklama" value={clicks?.whatsapp_clicks_30d ?? 0} accent="text-emerald-700" icon="💬" />
-        <StatCard label="Telefon Tıklama" value={clicks?.phone_clicks_30d ?? 0} accent="text-slate-800" icon="☎️" />
-        <StatCard label="Reklamdan Gelen Tıklama" value={clicks?.ads_clicks_30d ?? 0} accent="text-blue-700" icon="📣" />
-      </div>
-
-      <h2 className="mb-3 mt-8 text-sm font-semibold uppercase tracking-wide text-slate-500">Google Reklam Performansı</h2>
-      <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Reklamdan Gelen Ziyaretçi (Tekil)" value={adsVisits?.ads_unique_visitors ?? 0} accent="text-blue-700" icon="👤" />
-        <StatCard label="Reklamdan Gelen Sayfa Görüntüleme" value={adsVisits?.ads_pageviews ?? 0} accent="text-blue-700" icon="📄" />
-        <StatCard label="Reklamdan Gelen Talep" value={adsLeads ?? 0} accent="text-blue-700" icon="📨" />
-      </div>
-
-      <p className="mt-6 text-xs text-slate-400">
-        Bir ziyaret, Google Ads&apos;ten geldiğinde linkte otomatik eklenen izleyici koduyla (gclid) veya
-        cpc etiketiyle tanınır — çerez kullanılmaz. Detaylı talep listesi için &quot;Talepler&quot;, genel ziyaretçi
-        sayıları için &quot;İstatistikler&quot; sekmesine bakabilirsiniz.
-      </p>
     </div>
   );
 }
 
-function StatCard({ label, value, accent, icon }: { label: string; value: number; accent?: string; icon?: string }) {
+function StatCard({
+  label,
+  value,
+  accent,
+  icon,
+  big,
+}: {
+  label: string;
+  value: number;
+  accent?: string;
+  icon?: string;
+  big?: boolean;
+}) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5">
-      <p className="text-sm text-slate-500">{icon} {label}</p>
-      <p className={`mt-1 text-3xl font-bold ${accent ?? "text-slate-900"}`}>{value.toLocaleString("tr-TR")}</p>
+      <p className="text-sm text-slate-500">
+        {icon} {label}
+      </p>
+      <p className={`mt-1 font-bold ${big ? "text-4xl" : "text-3xl"} ${accent ?? "text-slate-900"}`}>
+        {value.toLocaleString("tr-TR")}
+      </p>
     </div>
   );
 }
